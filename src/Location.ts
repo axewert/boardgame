@@ -1,10 +1,13 @@
+import {Tile} from "./Tile";
+import {Game} from "./typings/typings";
+
 export class Location {
   name: string
-  map: string [][]
+  tiles: Game.Tile [][]
 
   constructor(map: string, name: string) {
     this.name = name
-    this.map = this.parseMap(map)
+    this.tiles = this.parseMap(map)
   }
 
   parseMap = (map: string) => {
@@ -12,7 +15,7 @@ export class Location {
       .trim()
       .split('\n')
       .map(row => {
-        return row.trim().split(' ')
+        return row.trim().split(' ').map(tile => new Tile())
       })
   }
 }
