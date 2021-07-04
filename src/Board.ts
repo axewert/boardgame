@@ -16,8 +16,6 @@ export class Board {
   getMap() {
     return LOCATIONS
   }
-
-
 }
 
 

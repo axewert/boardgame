@@ -1,5 +1,6 @@
 import {Tile} from "./Tile";
 import {Game} from "./typings/typings";
+import {TILES} from "./assets/js/tiles";
 
 export class Location {
   name: string
@@ -15,7 +16,10 @@ export class Location {
       .trim()
       .split('\n')
       .map(row => {
-        return row.trim().split(' ').map(tile => new Tile())
+        return row.trim().split(' ').map(tileName => {
+          if (tileName === '.') return null
+          return new Tile(TILES[tileName as keyof typeof TILES].name)
+        })
       })
   }
 }

@@ -1,6 +1,6 @@
 import {Game} from "./typings/typings";
 
 export class Tile {
-  name: string
-  creatures: Game.Creature[]
+  creatures: Game.Creature[] = []
+  constructor(public name: string) {}
 }
