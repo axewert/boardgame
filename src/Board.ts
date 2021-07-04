@@ -8,8 +8,8 @@ export class Board {
   }
   init() {
     this.getMap().forEach(location => {
-      const {map, name} = location
-      this.locations.push(new Location(map, name))
+      const {tiles, name} = location
+      this.locations.push(new Location(tiles, name))
     })
     console.log(this.locations)
   }

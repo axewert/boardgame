@@ -6,12 +6,12 @@ export class Location {
   name: string
   tiles: Game.Tile [][]
 
-  constructor(map: string, name: string) {
+  constructor(tiles: string, name: string) {
     this.name = name
-    this.tiles = this.parseMap(map)
+    this.tiles = this.parseTiles(tiles)
   }
 
-  parseMap = (map: string) => {
+  parseTiles = (map: string) => {
     return map
       .trim()
       .split('\n')
