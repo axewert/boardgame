@@ -1,7 +1,7 @@
 import {LOCATIONS} from "./assets/js/locations";
 import {Location} from "./Location";
 
-export class Game {
+export class Board {
   locations: Location[] = []
   constructor() {
     this.init()
