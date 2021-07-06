@@ -8,7 +8,7 @@ export class Hero implements Game.Hero.Instance{
   dices: any[]
   exp: number = 0
   health: number
-  inventory: Game.Hero.Inventory
+  inventory: any
   level: number = 1
   money: number = 6
   spellBook: any[] = []
@@ -22,7 +22,7 @@ export class Hero implements Game.Hero.Instance{
     this.health = health
     this.energy = energy
     this.faction = faction
-    this.inventory = new Inventory(inventory.initialState, inventory.requirements)
+    this.inventory = new Inventory(inventory)
   }
   set location(location: Game.Location.Instance) {
     this._location = location

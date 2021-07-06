@@ -26,31 +26,38 @@ export namespace Game {
       health: number
       energy: number
       faction: string
-      inventory: {
-        initialState: Inventory
-        requirements: InventoryRequirements
-      }
+      inventory: Inventory.Data
     }
     export interface Instance extends Hero.Data{
       level: number
       exp: number
       money: number
       //TODO change type of inventory, spell book, dices
-      inventory: any
       spellBook: any[]
       dices: any[]
     }
-    export interface InventoryRequirements {
-      range: string[]
-      melee: string[]
-      accessory: string[]
-      armor: string[]
+  }
+  export namespace Inventory {
+    export type ItemKind = 'range' | 'melee'
+    export type ItemType = 'bow'
+    export interface Item {
+      name: string
+      kind: string
+      type: string
+      level: number
+      cost: number
+      energy: number
+      description: string
     }
-    export interface Inventory {
-      range: string
-      melee: string
-      accessory: string
-      armor: string
+    export interface Instance {
+      items: Inventory.Item[]
+      requirements: Requirements
+    }
+    export interface Requirements {
+      
+    }
+    export interface Data extends Inventory.Instance{
+      requirements: Requirements
     }
   }
 }
