@@ -1,3 +1,3 @@
-import {Board} from "./Board";
+import {BoardGame} from "./BoardGame";
 
-new Board()
+new BoardGame()

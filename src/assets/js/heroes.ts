@@ -6,6 +6,7 @@ export const HEROES = [
     name: 'Shailara Witherblade',
     heroClass: Classes.WARRIOR,
     health: 4,
-    energy: 1
+    energy: 1,
+    faction: 'alliance'
   }
 ]

@@ -25,6 +25,7 @@ export namespace Game {
       heroClass: string
       health: number
       energy: number
+      faction: string
     }
     export interface Instance extends Hero.Data{
       level: number

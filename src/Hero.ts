@@ -12,13 +12,15 @@ export class Hero implements Game.Hero.Instance{
   money: number = 6
   spellBook: any[] = []
   energy: number
+  faction: string
   _location: Game.Location.Instance
   _zone: number
-  constructor({name, energy, health, heroClass}:Game.Hero.Data) {
+  constructor({name, energy, health, heroClass, faction}:Game.Hero.Data) {
     this.name = name
     this.heroClass = heroClass
     this.health = health
     this.energy = energy
+    this.faction = faction
   }
   set location(location: Game.Location.Instance) {
     this._location = location
