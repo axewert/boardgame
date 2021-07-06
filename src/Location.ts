@@ -1,25 +1,15 @@
-import {Tile} from "./Tile";
+import {Zone} from "./Zone";
 import {Game} from "./typings/typings";
 import {TILES} from "./assets/js/tiles";
 
-export class Location {
+export class Location implements Game.Location.Instance{
   name: string
-  tiles: Game.Tile [][]
-
-  constructor(tiles: string, name: string) {
+  zones: Game.Zone [] = []
+  constructor({name, zones}: Game.Location.Data) {
     this.name = name
-    this.tiles = this.parseTiles(tiles)
+    this.zones = zones.map(zone => new Zone(zone))
   }
-
-  parseTiles = (map: string) => {
-    return map
-      .trim()
-      .split('\n')
-      .map(row => {
-        return row.trim().split(' ').map(tileName => {
-          if (tileName === '.') return null
-          return new Tile(TILES[tileName as keyof typeof TILES].name)
-        })
-      })
+  getNearestZones(currentZone: number, radius = 1) {
+    return this.zones[currentZone].neighbours
   }
 }
