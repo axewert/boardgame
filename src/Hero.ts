@@ -1,5 +1,6 @@
 import {Game} from "./typings/typings";
 import Classes = Game.Hero.Classes;
+import {Inventory} from "./Inventory";
 
 export class Hero implements Game.Hero.Instance{
   name: string
@@ -7,7 +8,7 @@ export class Hero implements Game.Hero.Instance{
   dices: any[]
   exp: number = 0
   health: number
-  inventory: any[] = []
+  inventory: Game.Hero.Inventory
   level: number = 1
   money: number = 6
   spellBook: any[] = []
@@ -15,12 +16,13 @@ export class Hero implements Game.Hero.Instance{
   faction: string
   _location: Game.Location.Instance
   _zone: number
-  constructor({name, energy, health, heroClass, faction}:Game.Hero.Data) {
+  constructor({name, energy, health, heroClass, faction, inventory}:Game.Hero.Data) {
     this.name = name
     this.heroClass = heroClass
     this.health = health
     this.energy = energy
     this.faction = faction
+    this.inventory = new Inventory(inventory.initialState, inventory.requirements)
   }
   set location(location: Game.Location.Instance) {
     this._location = location

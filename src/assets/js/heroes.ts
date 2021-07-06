@@ -7,6 +7,20 @@ export const HEROES = [
     heroClass: Classes.WARRIOR,
     health: 4,
     energy: 1,
-    faction: 'alliance'
+    faction: 'alliance',
+    inventory: {
+      initialState: {
+        range: 'range',
+        melee: 'melee',
+        accessory: 'accessory',
+        armor: 'armor'
+      },
+      requirements: {
+        range: ['bow', 'gun'],
+        melee: ['mace', 'sword'],
+        accessory: ['any'],
+        armor: ['any']
+      }
+    }
   }
 ]

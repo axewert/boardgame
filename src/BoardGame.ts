@@ -15,6 +15,7 @@ export class BoardGame {
     this.getHeroes().forEach(hero => {
       this.heroes.push(new Hero(hero))
     })
+    console.log(this.heroes[0])
   }
   private getHeroes() {
     return HEROES
