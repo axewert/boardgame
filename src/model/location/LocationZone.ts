@@ -1,6 +1,6 @@
-import {Game} from "./typings/typings";
+import {Game} from "../../typings/typings";
 
-export class Zone {
+export class LocationZone {
   private _creatures: Game.Creature[] = []
   private readonly _neighbours: number[] = []
   private readonly _name: string

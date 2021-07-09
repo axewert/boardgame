@@ -1,4 +1,4 @@
-import {Game} from "./typings/typings";
+import {Game} from "../../typings/typings";
 
 export class Inventory {
   requirements: Game.Inventory.Requirements

@@ -1,6 +1,6 @@
-import {Game} from "./typings/typings";
+import {Game} from "../../typings/typings";
 import Classes = Game.Hero.Classes;
-import {Inventory} from "./Inventory";
+import {Inventory} from "../inventory/Inventory";
 
 export class Hero implements Game.Hero.Instance{
   name: string

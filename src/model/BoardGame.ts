@@ -1,8 +1,8 @@
-import {Board} from "./Board";
-import {Game} from "./typings/typings";
-import {LOCATIONS} from "./assets/js/locations";
-import {HEROES} from "./assets/js/heroes";
-import {Hero} from "./Hero";
+import {Board} from "./board/Board";
+import {Game} from "../typings/typings";
+import {LOCATIONS} from "../assets/js/locations";
+import {HEROES} from "../assets/js/heroes";
+import {Hero} from "./hero/Hero";
 
 export class BoardGame {
   board: Board

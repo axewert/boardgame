@@ -1,3 +1,3 @@
-import {BoardGame} from "./BoardGame";
+import {BoardGame} from "./model/BoardGame";
 
 new BoardGame()

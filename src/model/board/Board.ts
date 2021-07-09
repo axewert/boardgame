@@ -1,5 +1,5 @@
-import {Location} from "./Location";
-import {Game} from "./typings/typings";
+import {Location} from "../location/Location";
+import {Game} from "../../typings/typings";
 
 
 export class Board {
