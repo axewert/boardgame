@@ -1,3 +1,6 @@
 import {GameModel} from "./models/GameModel";
 
-new GameModel().init()
+const game = new GameModel()
+game.init()
+// @ts-ignore
+window.game = game

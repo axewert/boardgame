@@ -1,4 +1,6 @@
 import {Character} from "../typings/characterTypes";
+import {InventoryModel} from "./InventoryModel";
+import {Inventory} from "../typings/inventoryTypes";
 
 export class CharacterModel {
   private readonly name: string
@@ -8,7 +10,7 @@ export class CharacterModel {
   private readonly resource: number
   private readonly resourceName: string
   private readonly equipping: any[]
-  private readonly inventory: any[]
+  private readonly inventory = new InventoryModel()
   constructor(data: Character.Data) {
     this.name = data.name
     this.level = data.level || this.level
@@ -17,4 +19,8 @@ export class CharacterModel {
     this.resource = data.resource
     this.resourceName = data.resourceName
   }
+  addItem(item: Inventory.Item) {
+    this.inventory.addItem(item)
+  }
+
 }

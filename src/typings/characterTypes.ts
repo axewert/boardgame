@@ -4,6 +4,7 @@ export namespace Character {
     health: number
     resource: number
     resourceName: string
+    inventory: number[]
     level?: number
     exp?: number
   }
