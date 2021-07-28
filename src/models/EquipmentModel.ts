@@ -2,6 +2,7 @@ import {Inventory} from "../typings/inventoryTypes";
 import {Equipment} from "../typings/equipmentTypes";
 
 export class EquipmentModel {
+  requirements = ['mail']
   slots: Equipment.Slots = {
     back: null,
     chest: null,
@@ -20,7 +21,12 @@ export class EquipmentModel {
     waist: null,
     wrist: null
   }
+  isValid(req: string) {
+    return this.requirements.includes(req) || req === 'any'
+  }
   addItem(item: Inventory.Item) {
-    this.slots[item.slot as keyof Equipment.Slots] = item
+    if (this.isValid(item.kind)) {
+      this.slots[item.slot as keyof Equipment.Slots] = item
+    }
   }
 }
