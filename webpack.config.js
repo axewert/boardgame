@@ -1,11 +1,25 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-
+const webpack = require('webpack')
+const dotenv = require('dotenv')
+const getEnvKeys = () => {
+  const env = dotenv.config().parsed
+  const envKeys = Object
+    .keys(env)
+    .reduce((prev, next) => {
+      prev[`process.env.${next}`] = JSON.stringify(env[next]);
+      return prev;
+    }, {})
+  return envKeys
+}
 module.exports = {
   entry: './src/index.ts',
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+  },
+  optimization: {
+    splitChunks: {chunks: "all"}
   },
   module: {
     rules: [
@@ -25,6 +39,7 @@ module.exports = {
     port: 9000,
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin(),
+    new webpack.DefinePlugin(getEnvKeys())
   ]
 }
