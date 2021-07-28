@@ -6,4 +6,9 @@ export namespace Inventory {
     buy: number[],
     sell: number[]
   }
+  export type ItemTypes =
+    'feet' | 'head' | 'shoulder' | 'chest' |
+    'back' | 'wrist' | 'hands' | 'waist' | 'legs' |
+    'neck' | 'trinketFirst' | 'trinketSecond' |
+    'finger' | 'mainHand' | 'offHand' | 'ranged'
 }

@@ -6,4 +6,7 @@ export class InventoryModel {
     this.items.push(item)
   }
   removeItem() {}
+  getItemById(id: number) {
+    return this.items.find(item => item.id === id)
+  }
 }

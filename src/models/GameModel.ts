@@ -7,7 +7,10 @@ export class GameModel {
   private readonly characters: CharacterModel[] = []
   constructor() {}
   init() {
-    this.load().then(() => console.log('start'))
+    this.load().then(() => this.start())
+  }
+  start() {
+    this.characters[0].equipItem(59)
   }
   async load() {
     await this.fetchData<Inventory.Item[]>('items').then(res=> {
