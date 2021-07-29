@@ -2,7 +2,10 @@ import {Inventory} from "../typings/inventoryTypes";
 import {Equipment} from "../typings/equipmentTypes";
 
 export class EquipmentModel {
-  requirements = ['mail']
+  requirements: string[]
+  constructor(requirements: string[]) {
+    this.requirements = requirements
+  }
   slots: Equipment.Slots = {
     back: null,
     chest: null,

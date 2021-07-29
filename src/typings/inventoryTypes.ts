@@ -6,7 +6,7 @@ export namespace Inventory {
     buy: number[],
     sell: number[]
   }
-  export type ItemTypes =
+  export type ItemSlotTypes =
     'feet' | 'head' | 'shoulder' | 'chest' |
     'back' | 'wrist' | 'hands' | 'waist' | 'legs' |
     'neck' | 'trinketFirst' | 'trinketSecond' |
