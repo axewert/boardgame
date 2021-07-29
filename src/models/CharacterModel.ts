@@ -6,6 +6,7 @@ import {SpellBookModel} from "./SpellBookModel";
 import {SpellBook} from "../typings/spellBookTypes";
 import {CharacterClassModel} from "./CharacterClassModel";
 import SpellActionTypes = SpellBook.SpellActionTypes;
+import {CharacterPositionModel} from "./CharacterPositionModel";
 
 
 export class CharacterModel {
@@ -18,10 +19,12 @@ export class CharacterModel {
   private readonly inventory = new InventoryModel()
   private readonly spellBook: SpellBookModel
   private readonly characterClass: CharacterClassModel
+  private readonly position: CharacterPositionModel
   constructor(
     data: Character.Data,
     characterClass: CharacterClassModel,
-    spellBook: SpellBookModel
+    spellBook: SpellBookModel,
+    position: CharacterPositionModel
   ) {
     this.name = data.name
     this.level = data.level || this.level
@@ -31,7 +34,7 @@ export class CharacterModel {
     this.characterClass = characterClass
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook
-    this.castSpell(20577)
+    this.position = position
   }
   addItem(item: Inventory.Item) {
     this.inventory.addItem(item)
@@ -52,6 +55,5 @@ export class CharacterModel {
   castSpell(id: number) {
     const spell = this.spellBook.getSpellById(20577)
     spell.action(this)
-    console.log(this)
   }
 }
