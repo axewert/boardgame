@@ -1,3 +1,6 @@
-import {BoardGame} from "./model/BoardGame";
+import {GameModel} from "./models/GameModel";
 
-new BoardGame()
+const game = new GameModel()
+game.init()
+// @ts-ignore
+window.game = game
