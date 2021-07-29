@@ -9,6 +9,6 @@
     "moduleResolution": "node",
     "declaration": true
   },
-  "include": ["src/**/**/*"],
+  "include": ["src/**/**/*", "./modulesDeclarations.d.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
