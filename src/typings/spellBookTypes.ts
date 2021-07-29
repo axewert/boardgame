@@ -1,5 +1,8 @@
+import {CharacterModel} from "../models/CharacterModel";
+import {Creature} from "./creatureTypes";
+
 export namespace SpellBook {
-  export interface Spell {
+  export interface Spell<T> {
     id: number,
     name: string,
     race: string,
@@ -7,6 +10,7 @@ export namespace SpellBook {
     description: string,
     phase: string,
     type: string,
-    action: string
+    action: T
   }
+  export type SpellActionFn = (target: Creature) => void
 }

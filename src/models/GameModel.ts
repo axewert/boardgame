@@ -3,29 +3,37 @@ import {CharacterModel} from "./CharacterModel";
 import {Inventory} from "../typings/inventoryTypes";
 import {GameData} from "../typings/gameDataTypes";
 import {SpellBook} from "../typings/spellBookTypes";
+import {CharacterClassModel} from "./CharacterClassModel";
+import {SpellBookModel} from "./SpellBookModel";
 
 export class GameModel {
   private items: Inventory.Item[]
-  private spells: SpellBook.Spell[]
   private readonly characters: CharacterModel[] = []
   constructor() {}
   init() {
-    this.load().then(({items, characters, spells}: GameData) => {
-      this.items = items
-      this.spells = spells
-      characters.forEach(charData => {
-        const spells = this.spells
-          .filter(spell => spell.race === charData.race)
-        const character = new CharacterModel({...charData, spells})
-        charData.inventory
-          .forEach(id => character.addItem(this.getItemById(id)))
-        this.characters.push(character)
-      })
+    this.load().then((data: GameData) => {
+      this.items = data.items
+      this.createCharacters(data)
       this.start()
     })
   }
+  createCharacters({characters, classes, spells}: GameData) {
+    characters.forEach(charData => {
+      const characterClassData = classes.find(cls => cls.name === charData.characterClass)
+      const charSpells = spells
+        .filter(spell => spell.race === charData.race)
+      const character = new CharacterModel(
+        charData,
+        new CharacterClassModel(characterClassData),
+        new SpellBookModel(charSpells)
+      )
+      charData.inventory
+        .forEach(id => character.addItem(this.getItemById(id)))
+      this.characters.push(character)
+    })
+  }
   start() {
-
+    console.log(this.characters[0])
   }
   async load() {
     return await this.fetchData<GameData>('data')
@@ -36,8 +44,5 @@ export class GameModel {
   }
   getItemById(id: number) {
     return this.items.find(item => item.id === id)
-  }
-  getSpellByName(id: number) {
-    return this.spells.find(item => item.id === id)
   }
 }
