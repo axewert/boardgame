@@ -1,4 +1,3 @@
 export interface Creature {
-  health: number
-  increaseHealth: () => void
+  setHealth: (hp: number, type: string) => void
 }

@@ -13,4 +13,7 @@ export class CharacterClassModel {
     this.resourcePerLevel = data.resourcePerLevel
     this.equipmentRequirements  = data.equipmentRequirements
   }
+  getMaxHealth(level: number) {
+    return this.healthPerLevel * level
+  }
 }

@@ -5,6 +5,7 @@ import {EquipmentModel} from "./EquipmentModel";
 import {SpellBookModel} from "./SpellBookModel";
 import {SpellBook} from "../typings/spellBookTypes";
 import {CharacterClassModel} from "./CharacterClassModel";
+import SpellActionTypes = SpellBook.SpellActionTypes;
 
 
 export class CharacterModel {
@@ -38,12 +39,19 @@ export class CharacterModel {
   equipItem(id: number) {
     this.equipment.addItem(this.inventory.getItemById(id))
   }
-  increaseHealth() {
-    // this.health += 100
+  setHealth(hp: number, type: string) {
+    if(type === SpellActionTypes.regain) {
+      const maxHp = this.characterClass.getMaxHealth(this.level)
+      return this.currentHealth+hp > maxHp
+        ? maxHp
+        : this.currentHealth += hp
+    }
+    this.currentHealth += hp
   }
+
   castSpell(id: number) {
-    // const spell = this.spellBook.getSpellById(20577)
-    // spell.action(this)
-    // console.log(this)
+    const spell = this.spellBook.getSpellById(20577)
+    spell.action(this)
+    console.log(this)
   }
 }

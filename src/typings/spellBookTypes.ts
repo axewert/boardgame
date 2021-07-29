@@ -12,5 +12,13 @@ export namespace SpellBook {
     type: string,
     action: T
   }
+  export enum SpellActionTypes {
+    regain = "regain",
+  }
+  export enum SpellActionKeys {
+    type,
+    amount,
+    target
+  }
   export type SpellActionFn = (target: Creature) => void
 }
