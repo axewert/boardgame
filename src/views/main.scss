@@ -1,0 +1,137 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  display:flex;
+  flex-direction:column;
+  overflow: hidden;
+  background: rgb(33, 24, 63);
+}
+.character-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.character-preview {
+  width: 35%;
+  height: 100%;
+}
+.character-info-card {
+  width: 65%;
+  height: 80%;
+  background: dodgerblue;
+  display: grid;
+  grid-template: repeat(2, 1fr)/repeat(4, 1fr);
+}
+.character-creator {
+  width: 35%;
+  height: 100%;
+  position: absolute;
+  &__body {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
+  &__footer {
+    width: 100%;
+    height: 10%;
+  }
+  &__panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    &_vertical {
+      width: 25%;
+      flex-direction: column;
+    }
+  }
+}
+.button {
+  display: flex;
+  align-items: center;
+  &__expandable-container {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    padding-left: 50px;
+  }
+  &__middle {
+    background-image: url('../assets/img/button_bg_repeat.png');
+    background-position: center;
+    color: white;
+    height: 49px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 100ms ease-in;
+  }
+  &__text {
+    display: none;
+  }
+  &__cap {
+    background-image: url('../assets/img/button_br_cap.png');
+    width: 21px;
+    height: 49px;
+  }
+}
+.icon {
+  cursor: pointer;
+  background-position: center;
+  background-size: cover;
+  z-index: 5;
+  &_faction {
+    width: 65px;
+    height: 80px;
+  }
+  &_class {
+    width: 70px;
+    height: 70px;
+    &:hover {
+      ~ .button__expandable-container {
+        & .button__middle {
+          width: 100px;
+        }
+        & .button__text {
+          display: block;
+        }
+      }
+    }
+  }
+  &_druid {
+    background-image: url('../assets/img/druid_icon.png');
+  }
+  &_hunter {
+    background-image: url('../assets/img/hunter_icon.png')
+  }
+  &_mage {
+    background-image: url('../assets/img/mage_icon.png')
+  }
+  &_paladin {
+    background-image: url('../assets/img/paladin_icon.png')
+  }
+  &_priest {
+    background-image: url('../assets/img/priest_icon.png')
+  }
+  &_rogue {
+    background-image: url('../assets/img/rogue_icon.png')
+  }
+  &_shaman {
+    background-image: url('../assets/img/shaman_icon.png')
+  }
+  &_warlock {
+    background-image: url('../assets/img/warlock_icon.png')
+  }
+  &_warrior {
+    background-image: url('../assets/img/warrior_icon.png')
+  }
+  &_alliance {
+    background-image: url('../assets/img/alliance.png');
+  }
+  &_horde {
+    background-image: url('../assets/img/horde.png');
+  }
+}

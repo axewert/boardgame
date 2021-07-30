@@ -38,7 +38,6 @@ export class GameModel {
     })
   }
   start() {
-    console.log(this.characters[0])
   }
   async load() {
     return await this.fetchData<GameData>('data')

@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const dotenv = require('dotenv')
+const CopyPlugin = require('copy-webpack-plugin')
 const getEnvKeys = () => {
   const env = dotenv.config().parsed
   const envKeys = Object
@@ -28,10 +29,14 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.(scss|css)$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+      },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.css', '.scss'],
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
@@ -39,7 +44,13 @@ module.exports = {
     port: 9000,
   },
   plugins: [
-    new HtmlWebpackPlugin(),
-    new webpack.DefinePlugin(getEnvKeys())
+    new HtmlWebpackPlugin({template: "src/index.html"}),
+    new webpack.DefinePlugin(getEnvKeys()),
+    new CopyPlugin({
+      patterns: [
+        { from: "src/data", to: "data" },
+        { from: "src/assets", to: "assets" }
+      ],
+    }),
   ]
 }
