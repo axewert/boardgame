@@ -1,5 +1,5 @@
-import {GameModel} from "../../models/GameModel";
-import {GameView} from "../GameView";
+import {GameModel} from "../models/GameModel";
+import {GameView} from "../views/GameView";
 import {Observer} from "../utlis/observer/Observer";
 
 export class GameController {

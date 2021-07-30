@@ -5,8 +5,8 @@ import {GameData} from "../typings/gameDataTypes";
 import {CharacterClassModel} from "./CharacterClassModel";
 import {SpellBookModel} from "./SpellBookModel";
 import {CharacterPositionModel} from "./CharacterPositionModel";
-import {Subject} from "../views/utlis/observer/Subject";
-import {Observer} from "../views/utlis/observer/Observer";
+import {Subject} from "../utlis/observer/Subject";
+import {Observer} from "../utlis/observer/Observer";
 
 
 export class GameModel {
