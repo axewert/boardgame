@@ -16,7 +16,6 @@ export class GameView {
   characterCreator = new CharacterCreatorView()
   constructor(root: HTMLElement) {
     this.root = root
-    this.init()
   }
   init() {
     this.root.insertAdjacentHTML('beforeend', this.characterInfo.html())

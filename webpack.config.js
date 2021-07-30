@@ -48,7 +48,6 @@ module.exports = {
     new webpack.DefinePlugin(getEnvKeys()),
     new CopyPlugin({
       patterns: [
-        { from: "src/data", to: "data" },
         { from: "src/assets", to: "assets" }
       ],
     }),
