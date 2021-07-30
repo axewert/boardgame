@@ -5,10 +5,14 @@ import {GameData} from "../typings/gameDataTypes";
 import {CharacterClassModel} from "./CharacterClassModel";
 import {SpellBookModel} from "./SpellBookModel";
 import {CharacterPositionModel} from "./CharacterPositionModel";
+import {Subject} from "../views/utlis/observer/Subject";
+import {Observer} from "../views/utlis/observer/Observer";
+
 
 export class GameModel {
   private items: Inventory.Item[]
   private readonly characters: CharacterModel[] = []
+  private readonly subject = new Subject()
   private readonly players = {
     human: '',
     computer: ''
@@ -48,5 +52,14 @@ export class GameModel {
   }
   getItemById(id: number) {
     return this.items.find(item => item.id === id)
+  }
+  subscribe(observer: Observer) {
+    this.subject.subscribe(observer)
+  }
+  unsubscribe(observer: Observer) {
+    this.subject.unsubscribe(observer)
+  }
+  notify() {
+    this.subject.notify()
   }
 }

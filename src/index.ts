@@ -5,7 +5,6 @@ import {GameController} from "./views/controllers/GameController";
 
 const root = document.body
 const game = new GameController(new GameModel(), new GameView(root))
-game.init()
 // @ts-ignore
 window.game = game
 
