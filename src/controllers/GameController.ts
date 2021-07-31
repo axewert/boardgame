@@ -1,6 +1,8 @@
 import {GameModel} from "../models/GameModel";
 import {GameView} from "../views/GameView";
 import {Observer} from "../utlis/observer/Observer";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {GameData} from "../typings/gameDataTypes";
 
 export class GameController {
   private readonly observer = new Observer(this.update.bind(this))
@@ -12,9 +14,20 @@ export class GameController {
   }
   init() {
     this.gameModel.subscribe(this.observer)
-    this.gameModel.init()
+    this.gameView.subscribe(this.observer)
+    this.gameModel.createNewGame()
   }
-  update() {
-
+  private handleAction(action: Action) {
+    switch (action.type) {
+      case ActionTypes.ModelDataIsLoaded: {
+        this.gameView.renderCharacterCreatorScreen(
+          'hunter',
+          'blood_elf'
+        )
+      }
+    }
+  }
+  update(action: Action) {
+    this.handleAction(action)
   }
 }

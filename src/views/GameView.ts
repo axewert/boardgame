@@ -1,36 +1,60 @@
 import * as THREE from 'three'
-import {CharacterSelectorView} from "./CharacterSelectorView";
-import {CharacterInfoView} from "./CharacterInfoView";
-import {CharacterCreatorView} from "./CharacterCreatorView";
-
-import('./main.scss')
+import {Observer} from "../utlis/observer/Observer";
+import {Action} from "../typings/observerActionTypes";
+import {Subject} from "../utlis/observer/Subject";
+import {Character} from "../typings/characterTypes";
+import {CharacterInfo} from "./ui/CharacterInfo/CharacterInfo";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {CharacterInfoPreview} from "./ui/CharacterInfoPreview/CharacterInfoPreview";
+import {CharacterView} from "./CharacterView";
 
 export class GameView {
   root: HTMLElement
-  scene = new THREE.Scene()
-  camera =  new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000)
-  renderer =  new THREE.WebGLRenderer()
-  light = new THREE.AmbientLight(new THREE.Color('#e2d2a2'), 4)
-  characterSelector = new CharacterSelectorView()
-  characterInfo = new CharacterInfoView()
-  characterCreator = new CharacterCreatorView()
+  subject = new Subject()
+  characterInfo: CharacterInfo
+  clock = new THREE.Clock()
+  activeCharacter: CharacterView
+  characters: CharacterView[] = []
   constructor(root: HTMLElement) {
     this.root = root
+    this.init()
   }
   init() {
-    this.root.insertAdjacentHTML('beforeend', this.characterInfo.html())
-    this.root.insertAdjacentHTML('beforeend', this.characterCreator.html())
+    this.characterInfo = new CharacterInfo(this.root)
   }
-  // init() {
-  //   this.renderer.setSize(window.innerWidth, window.innerHeight)
-  //   this.scene.background = new THREE.Color('#ffffff')
-  //   document.body.appendChild(this.renderer.domElement)
-  //   this.scene.add(this.camera, this.light)
-  //   this.render()
-  // }
-  //
-  // render() {
-  //   requestAnimationFrame(this.render.bind(this))
-  //   this.renderer.render(this.scene, this.camera)
-  // }
+
+  renderCharacterCreatorScreen(className: string, race: string) {
+    this.root.appendChild(this.characterInfo.getDomElement())
+    this.render()
+    this.getCharacter(className,race).then(char => {
+      this.activeCharacter = char
+      this.characterInfo.setCharacter(this.activeCharacter)
+    })
+  }
+  async getCharacter(className: string, race: string) {
+    const isExist = this.characters.find(char => {
+      return char.className === className && char.race === race
+    })
+    if(isExist) return isExist
+    return await new CharacterView(className, race).create()
+  }
+
+  subscribe(observer: Observer) {
+    this.subject.subscribe(observer)
+  }
+
+  unsubscribe(observer: Observer) {
+    this.subject.unsubscribe(observer)
+  }
+
+  notify(action: Action) {
+    this.subject.notify(action)
+  }
+
+  render() {
+    requestAnimationFrame(this.render.bind(this))
+    this.characterInfo.render()
+    if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
+  }
 }
