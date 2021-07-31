@@ -1,0 +1,12 @@
+.character-info-card {
+  width: 70%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  background-image: url('../../../assets/img/character_info_card_bg.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
