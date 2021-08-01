@@ -68,4 +68,7 @@ export class CharacterModel {
   get gender() {
     return this._gender
   }
+  get spells() {
+    return this.spellBook.spells
+  }
 }

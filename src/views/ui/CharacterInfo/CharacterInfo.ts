@@ -1,6 +1,7 @@
 import {CharacterInfoPreview} from "../CharacterInfoPreview/CharacterInfoPreview";
 import {CharacterInfoCard} from "../CharacterInfoCard/CharacterInfoCard";
 import {CharacterView} from "../../CharacterView";
+import {CharacterModel} from "../../../models/CharacterModel";
 
 import (/*webpackChunkName: 'character-info'*/'./styles.scss')
 
@@ -21,8 +22,9 @@ export class CharacterInfo {
       this.characterInfoCard.getDomElement()
     )
   }
-  setCharacter(character: CharacterView) {
-    this.characterInfoPreview.setCharacter(character)
+  setCharacter(characterView: CharacterView, characterModel: CharacterModel) {
+    this.characterInfoPreview.setCharacter(characterView)
+    this.characterInfoCard.setCharacter(characterModel)
   }
   getDomElement() {
     return this.domElement

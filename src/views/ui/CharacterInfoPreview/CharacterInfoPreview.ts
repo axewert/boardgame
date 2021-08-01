@@ -21,9 +21,13 @@ export class CharacterInfoPreview {
     this.setRenderer()
     this.setLights()
     this.setControls()
+    this.setCamera()
     this.scene.add(this.ambientLight, this.pointLight)
   }
-
+  private setCamera() {
+    this.camera.position.set(2.8,1.2,1)
+    this.controls.update()
+  }
   private setRenderer() {
     this.renderer.setSize(500, 950)
     this.renderer.setClearColor( 0xffffff, 0 )
@@ -47,8 +51,6 @@ export class CharacterInfoPreview {
     if(this.character) this.character.model.scene.removeFromParent()
     this.character = character
     this.scene.add(this.character.model.scene)
-
-    this.camera.position.set(2.8,1.2,1)
     const point = new Vector3().copy(this.character.model.scene.position)
     this.controls.target = point
     point.y += 1

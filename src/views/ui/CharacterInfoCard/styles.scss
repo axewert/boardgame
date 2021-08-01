@@ -9,4 +9,10 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  &__cards {
+    display: grid;
+    grid-template: repeat(2,1fr)/repeat(4,1fr);
+    position: relative;
+    top: 10%;
+  }
 }

@@ -42,11 +42,12 @@ export class GameView {
   setActiveCharacter(character: CharacterModel) {
     this.getCharacter(character).then(char => {
       this.activeCharacter = char
-      this.characterInfo.setCharacter(this.activeCharacter)
+      this.characterInfo.setCharacter(this.activeCharacter, character)
     })
   }
   handleCreatorPanelClick(e: MouseEvent) {
     const className = (e.target as HTMLElement).dataset.charclass
+    if(className === this.activeCharacter.className) return false
     this.notify({
       type: ActionTypes.ViewClassControlIsClicked,
       payload: {
