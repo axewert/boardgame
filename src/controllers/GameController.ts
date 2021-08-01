@@ -16,17 +16,25 @@ export class GameController {
     this.gameModel.subscribe(this.observer)
     this.gameView.subscribe(this.observer)
     this.gameModel.createNewGame()
+
   }
   private handleAction(action: Action) {
     switch (action.type) {
       case ActionTypes.ModelDataIsLoaded: {
-        const characters = action.payload as CharacterModel[]
-        this.gameView.renderCharacterCreatorScreen(characters)
+        this.gameModel.play([
+          {player: 'computer', characters: ['warrior']},
+          {player: 'player', characters: ['hunter']}
+        ])
         break
       }
       case ActionTypes.ViewClassControlIsClicked: {
         const {className} = action.payload as ViewClassPanelInfo
         this.gameView.setActiveCharacter(this.gameModel.getCharacterByClass(className))
+        break
+      }
+      case ActionTypes.WorldIsReady: {
+        console.log(action.payload)
+        this.gameView.renderMainGameScreen()
       }
     }
   }

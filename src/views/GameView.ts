@@ -4,8 +4,9 @@ import {Action, ActionTypes} from "../typings/observerActionTypes";
 import {Subject} from "../utlis/observer/Subject";
 import {CharacterInfo} from "./ui/CharacterInfo/CharacterInfo";
 import {CharacterView} from "./CharacterView";
-import {CharacterCreatorPanel} from "./ui/CharacterCreator/CharacterCreatorPanel";
 import {CharacterModel} from "../models/CharacterModel";
+import {CharacterCreatorPanel} from "./ui/CharacterCreator/CharacterCreatorPanel";
+import {WorldView} from "./WorldView";
 
 export class GameView {
   root: HTMLElement
@@ -15,6 +16,8 @@ export class GameView {
   activeCharacter: CharacterView
   characters: CharacterView[] = []
   characterCreator: CharacterCreatorPanel
+  worldView: WorldView
+  activeView: WorldView | CharacterInfo
   constructor(root: HTMLElement) {
     this.root = root
     this.init()
@@ -25,7 +28,6 @@ export class GameView {
 
   renderCharacterCreatorScreen(characters: CharacterModel[]) {
     this.characterInfo = new CharacterInfo(this.root)
-
     this.characterCreator = new CharacterCreatorPanel(
       characters,
       this.handleCreatorPanelClick.bind(this)
@@ -39,12 +41,27 @@ export class GameView {
     this.render()
     this.setActiveCharacter(characters[0])
   }
+  renderMainGameScreen() {
+    this.createWorld()
+    this.renderWorld()
+    this.render()
+  }
+  createWorld() {
+    this.worldView = new WorldView(this.root)
+  }
+  renderWorld() {
+    this.activeView = this.worldView
+  }
+  updateWorld() {
+
+  }
   setActiveCharacter(character: CharacterModel) {
     this.getCharacter(character).then(char => {
       this.activeCharacter = char
       this.characterInfo.setCharacter(this.activeCharacter, character)
     })
   }
+
   handleCreatorPanelClick(e: MouseEvent) {
     const className = (e.target as HTMLElement).dataset.charclass
     if(className === this.activeCharacter.className) return false
@@ -80,7 +97,7 @@ export class GameView {
 
   render() {
     requestAnimationFrame(this.render.bind(this))
-    this.characterInfo.render()
+    this.activeView.render()
     if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
   }
 }
