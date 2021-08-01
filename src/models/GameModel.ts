@@ -1,54 +1,69 @@
 import {Character} from "../typings/characterTypes";
 import {CharacterModel} from "./CharacterModel";
+import {CharacterClassModel} from "./CharacterClassModel";
+
 import {Inventory} from "../typings/inventoryTypes";
 import {GameData} from "../typings/gameDataTypes";
-import {CharacterClassModel} from "./CharacterClassModel";
-import {SpellBookModel} from "./SpellBookModel";
-import {CharacterPositionModel} from "./CharacterPositionModel";
+
 import {Subject} from "../utlis/observer/Subject";
 import {Observer} from "../utlis/observer/Observer";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {SpellBook} from "../typings/spellBookTypes";
+import {CharacterPositionModel} from "./CharacterPositionModel";
+import {SpellBookModel} from "./SpellBookModel";
 
 
 export class GameModel {
-  private items: Inventory.Item[]
+  private _items: Inventory.Item[]
   private readonly characters: CharacterModel[] = []
+  private _races: Character.Race[]
+  private _classes: Character.Class[]
   private readonly subject = new Subject()
+  private spells: SpellBook.Spell<any>[]
   private readonly players = {
     human: '',
     computer: ''
   }
+
   constructor() {}
   init() {
-    this.load().then((data: GameData) => {
-      this.items = data.items
-      this.createCharacters(data)
-      this.start()
-    })
+
   }
-  createCharacters({characters, classes, spells}: GameData) {
-    characters.forEach(charData => {
-      const characterClassData = classes.find(cls => cls.name === charData.characterClass)
-      const charSpells = spells
-        .filter(spell => spell.race === charData.race)
-      const character = new CharacterModel(
-        charData,
-        new CharacterClassModel(characterClassData),
-        new SpellBookModel(charSpells),
-        new CharacterPositionModel(charData.position)
-      )
-      charData.inventory
-        .forEach(id => character.addItem(this.getItemById(id)))
-      this.characters.push(character)
-    })
+  createNewGame() {
+    this.fetchData()
+      .then(res => res.json())
+      .then((data: GameData)=> {
+        this._items = data.items
+        this._races = data.races
+        this._classes = data.classes
+        this.spells = data.spells
+        data.characters.forEach(character => this.createNewCharacter(character))
+        this.notify({
+          type: ActionTypes.ModelDataIsLoaded,
+          payload: this.characters
+        })
+      })
   }
+  async fetchData() {
+    return await fetch(`${process.env.HOST}/data.json`)
+  }
+
+  createNewCharacter(character: Character.Data) {
+    const position = this.races
+      .find(race => race.name === character.race)
+      .position
+    const classData = this.classes
+      .find(classObj => classObj.name === character.className)
+    const spells = this.spells.filter(spell => classData.spells.includes(spell.id))
+    this.characters.push(new CharacterModel(
+      character,
+      new CharacterClassModel(classData),
+      new SpellBookModel(spells),
+      new CharacterPositionModel(position)
+    ))
+  }
+
   start() {
-  }
-  async load() {
-    return await this.fetchData<GameData>('data')
-  }
-  async fetchData<T>(dataName: string) {
-    const res = await fetch(`${process.env.HOST}/${dataName}.json`)
-    return await res.json() as T
   }
   getItemById(id: number) {
     return this.items.find(item => item.id === id)
@@ -59,7 +74,19 @@ export class GameModel {
   unsubscribe(observer: Observer) {
     this.subject.unsubscribe(observer)
   }
-  notify() {
-    this.subject.notify()
+  notify(action: Action) {
+    this.subject.notify(action)
+  }
+  get items() {
+    return this._items
+  }
+  get races() {
+    return this._races
+  }
+  get classes() {
+    return this._classes
+  }
+  getCharacterByClass(className: string) {
+    return this.characters.find(character => character.className === className)
   }
 }

@@ -1,36 +1,86 @@
 import * as THREE from 'three'
-import {CharacterSelectorView} from "./CharacterSelectorView";
-import {CharacterInfoView} from "./CharacterInfoView";
-import {CharacterCreatorView} from "./CharacterCreatorView";
-
-import('./main.scss')
+import {Observer} from "../utlis/observer/Observer";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {Subject} from "../utlis/observer/Subject";
+import {CharacterInfo} from "./ui/CharacterInfo/CharacterInfo";
+import {CharacterView} from "./CharacterView";
+import {CharacterCreatorPanel} from "./ui/CharacterCreator/CharacterCreatorPanel";
+import {CharacterModel} from "../models/CharacterModel";
 
 export class GameView {
   root: HTMLElement
-  scene = new THREE.Scene()
-  camera =  new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000)
-  renderer =  new THREE.WebGLRenderer()
-  light = new THREE.AmbientLight(new THREE.Color('#e2d2a2'), 4)
-  characterSelector = new CharacterSelectorView()
-  characterInfo = new CharacterInfoView()
-  characterCreator = new CharacterCreatorView()
+  subject = new Subject()
+  characterInfo: CharacterInfo
+  clock = new THREE.Clock()
+  activeCharacter: CharacterView
+  characters: CharacterView[] = []
+  characterCreator: CharacterCreatorPanel
   constructor(root: HTMLElement) {
     this.root = root
+    this.init()
   }
   init() {
-    this.root.insertAdjacentHTML('beforeend', this.characterInfo.html())
-    this.root.insertAdjacentHTML('beforeend', this.characterCreator.html())
+
   }
-  // init() {
-  //   this.renderer.setSize(window.innerWidth, window.innerHeight)
-  //   this.scene.background = new THREE.Color('#ffffff')
-  //   document.body.appendChild(this.renderer.domElement)
-  //   this.scene.add(this.camera, this.light)
-  //   this.render()
-  // }
-  //
-  // render() {
-  //   requestAnimationFrame(this.render.bind(this))
-  //   this.renderer.render(this.scene, this.camera)
-  // }
+
+  renderCharacterCreatorScreen(characters: CharacterModel[]) {
+    this.characterInfo = new CharacterInfo(this.root)
+
+    this.characterCreator = new CharacterCreatorPanel(
+      characters,
+      this.handleCreatorPanelClick.bind(this)
+    )
+
+    this.root.append(
+      this.characterInfo.getDomElement(),
+      this.characterCreator.getDomElement()
+    )
+
+    this.render()
+    this.setActiveCharacter(characters[0])
+  }
+  setActiveCharacter(character: CharacterModel) {
+    this.getCharacter(character).then(char => {
+      this.activeCharacter = char
+      this.characterInfo.setCharacter(this.activeCharacter, character)
+    })
+  }
+  handleCreatorPanelClick(e: MouseEvent) {
+    const className = (e.target as HTMLElement).dataset.charclass
+    if(className === this.activeCharacter.className) return false
+    this.notify({
+      type: ActionTypes.ViewClassControlIsClicked,
+      payload: {
+        className
+      }
+    })
+  }
+
+  async getCharacter({name, className, race, gender}: CharacterModel) {
+    const isExist = this.characters.find(char => {
+      return char.name === name
+    })
+    if(isExist) return isExist
+    const character =  await new CharacterView(name, className, race, gender).create()
+    this.characters.push(character)
+    return character
+  }
+
+  subscribe(observer: Observer) {
+    this.subject.subscribe(observer)
+  }
+
+  unsubscribe(observer: Observer) {
+    this.subject.unsubscribe(observer)
+  }
+
+  notify(action: Action) {
+    this.subject.notify(action)
+  }
+
+  render() {
+    requestAnimationFrame(this.render.bind(this))
+    this.characterInfo.render()
+    if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
+  }
 }

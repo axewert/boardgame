@@ -73,3 +73,5 @@ jspm_packages/
 .fusebox/
 
 .idea
+
+src/assets

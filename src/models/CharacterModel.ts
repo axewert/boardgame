@@ -10,7 +10,7 @@ import {CharacterPositionModel} from "./CharacterPositionModel";
 
 
 export class CharacterModel {
-  private readonly name: string
+  private readonly _name: string
   private readonly level: number = 1
   private readonly exp: number = 0
   private currentHealth: number
@@ -18,19 +18,19 @@ export class CharacterModel {
   private readonly equipment: EquipmentModel
   private readonly inventory = new InventoryModel()
   private readonly spellBook: SpellBookModel
-  private readonly characterClass: CharacterClassModel
+  private readonly _race: string
+  characterClass: CharacterClassModel
   private readonly position: CharacterPositionModel
+  private readonly _gender: string;
   constructor(
     data: Character.Data,
     characterClass: CharacterClassModel,
     spellBook: SpellBookModel,
     position: CharacterPositionModel
   ) {
-    this.name = data.name
-    this.level = data.level || this.level
-    this.exp = data.exp || this.exp
-    this.currentHealth = data.currentHealth
-    this.currentResource = data.currentResource
+    this._name = data.name
+    this._race = data.race
+    this._gender = data.gender
     this.characterClass = characterClass
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook
@@ -55,5 +55,20 @@ export class CharacterModel {
   castSpell(id: number) {
     const spell = this.spellBook.getSpellById(20577)
     spell.action(this)
+  }
+  get name() {
+    return this._name
+  }
+  get className() {
+    return this.characterClass.name
+  }
+  get race() {
+    return this._race
+  }
+  get gender() {
+    return this._gender
+  }
+  get spells() {
+    return this.spellBook.spells
   }
 }

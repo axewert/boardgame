@@ -2,7 +2,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const dotenv = require('dotenv')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CopyPlugin = require('copy-webpack-plugin')
+
 const getEnvKeys = () => {
   const env = dotenv.config().parsed
   const envKeys = Object
@@ -31,7 +33,12 @@ module.exports = {
       },
       {
         test: /\.(scss|css)$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+          'sass-loader'
+        ],
       },
     ],
   },
@@ -46,6 +53,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({template: "src/index.html"}),
     new webpack.DefinePlugin(getEnvKeys()),
+    new MiniCssExtractPlugin({filename: '[name][hash].css'}),
     new CopyPlugin({
       patterns: [
         { from: "src/assets", to: "assets" }

@@ -7,4 +7,5 @@ export interface GameData {
   items: Inventory.Item[]
   spells: SpellBook.Spell<string>[]
   classes: Character.Class[]
+  races: Character.Race[]
 }
