@@ -1,14 +1,11 @@
 import * as THREE from 'three'
 import {Observer} from "../utlis/observer/Observer";
-import {Action} from "../typings/observerActionTypes";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
 import {Subject} from "../utlis/observer/Subject";
-import {Character} from "../typings/characterTypes";
 import {CharacterInfo} from "./ui/CharacterInfo/CharacterInfo";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {CharacterInfoPreview} from "./ui/CharacterInfoPreview/CharacterInfoPreview";
 import {CharacterView} from "./CharacterView";
 import {CharacterCreatorPanel} from "./ui/CharacterCreator/CharacterCreatorPanel";
+import {CharacterModel} from "../models/CharacterModel";
 
 export class GameView {
   root: HTMLElement
@@ -18,18 +15,16 @@ export class GameView {
   activeCharacter: CharacterView
   characters: CharacterView[] = []
   characterCreator: CharacterCreatorPanel
-  backup: Character.Data[]
   constructor(root: HTMLElement) {
     this.root = root
     this.init()
   }
   init() {
-    this.characterInfo = new CharacterInfo(this.root)
+
   }
 
-  renderCharacterCreatorScreen(characters: Character.Data[], classes: Character.Class[], races: Character.Race[]) {
-
-    this.backup = characters
+  renderCharacterCreatorScreen(characters: CharacterModel[]) {
+    this.characterInfo = new CharacterInfo(this.root)
 
     this.characterCreator = new CharacterCreatorPanel(
       characters,
@@ -44,7 +39,7 @@ export class GameView {
     this.render()
     this.setActiveCharacter(characters[0])
   }
-  setActiveCharacter(character: Character.Data) {
+  setActiveCharacter(character: CharacterModel) {
     this.getCharacter(character).then(char => {
       this.activeCharacter = char
       this.characterInfo.setCharacter(this.activeCharacter)
@@ -52,16 +47,22 @@ export class GameView {
   }
   handleCreatorPanelClick(e: MouseEvent) {
     const className = (e.target as HTMLElement).dataset.charclass
-    const char = this.backup.find(char => char.className === className)
-    this.setActiveCharacter(char)
+    this.notify({
+      type: ActionTypes.ViewClassControlIsClicked,
+      payload: {
+        className
+      }
+    })
   }
 
-  async getCharacter({name, className, race, gender}: Character.Data) {
+  async getCharacter({name, className, race, gender}: CharacterModel) {
     const isExist = this.characters.find(char => {
       return char.name === name
     })
     if(isExist) return isExist
-    return await new CharacterView(name, className, race, gender).create()
+    const character =  await new CharacterView(name, className, race, gender).create()
+    this.characters.push(character)
+    return character
   }
 
   subscribe(observer: Observer) {

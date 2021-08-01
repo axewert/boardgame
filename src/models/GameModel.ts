@@ -1,11 +1,16 @@
 import {Character} from "../typings/characterTypes";
 import {CharacterModel} from "./CharacterModel";
+import {CharacterClassModel} from "./CharacterClassModel";
+
 import {Inventory} from "../typings/inventoryTypes";
 import {GameData} from "../typings/gameDataTypes";
 
 import {Subject} from "../utlis/observer/Subject";
 import {Observer} from "../utlis/observer/Observer";
 import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {SpellBook} from "../typings/spellBookTypes";
+import {CharacterPositionModel} from "./CharacterPositionModel";
+import {SpellBookModel} from "./SpellBookModel";
 
 
 export class GameModel {
@@ -14,10 +19,12 @@ export class GameModel {
   private _races: Character.Race[]
   private _classes: Character.Class[]
   private readonly subject = new Subject()
+  private spells: SpellBook.Spell<any>[]
   private readonly players = {
     human: '',
     computer: ''
   }
+
   constructor() {}
   init() {
 
@@ -29,18 +36,33 @@ export class GameModel {
         this._items = data.items
         this._races = data.races
         this._classes = data.classes
+        this.spells = data.spells
+        data.characters.forEach(character => this.createNewCharacter(character))
         this.notify({
           type: ActionTypes.ModelDataIsLoaded,
-          payload: data
+          payload: this.characters
         })
       })
   }
   async fetchData() {
     return await fetch(`${process.env.HOST}/data.json`)
   }
-  createCharacters({races, classes, spells}: GameData) {
 
+  createNewCharacter(character: Character.Data) {
+    const position = this.races
+      .find(race => race.name === character.race)
+      .position
+    const classData = this.classes
+      .find(classObj => classObj.name === character.className)
+    const spells = this.spells.filter(spell => classData.spells.includes(spell.id))
+    this.characters.push(new CharacterModel(
+      character,
+      new CharacterClassModel(classData),
+      new SpellBookModel(spells),
+      new CharacterPositionModel(position)
+    ))
   }
+
   start() {
   }
   getItemById(id: number) {
@@ -63,5 +85,8 @@ export class GameModel {
   }
   get classes() {
     return this._classes
+  }
+  getCharacterByClass(className: string) {
+    return this.characters.find(character => character.className === className)
   }
 }

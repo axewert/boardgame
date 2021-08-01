@@ -3,8 +3,10 @@ import {CharacterModel} from "../models/CharacterModel";
 
 export interface Action {
   type: ActionTypes
-  payload?: GameData | CharacterModel[]
+  payload?: GameData | CharacterModel[] | ViewClassPanelInfo
 }
 export enum ActionTypes {
-  ModelDataIsLoaded = 'ModelDataIsLoaded'
+  ModelDataIsLoaded = 'ModelDataIsLoaded',
+  ViewClassControlIsClicked = 'ViewClassControlIsClicked'
 }
+export type ViewClassPanelInfo = {className: string}

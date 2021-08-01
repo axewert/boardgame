@@ -1,6 +1,7 @@
 import {BasicUiElement} from "../BasicUiElement";
 import {Character} from "../../../typings/characterTypes";
 import {Button} from "../Button/Button";
+import {CharacterModel} from "../../../models/CharacterModel";
 
 import (/*webpackChunkName: 'character-creator-panel'*/'./styles.scss')
 
@@ -8,12 +9,12 @@ import (/*webpackChunkName: 'character-creator-panel'*/'./styles.scss')
 export class CharacterCreatorPanel {
   private domElement: HTMLElement
   onClick: (e: MouseEvent) => void
-  constructor(characters: Character.Data[], onClick: (e: MouseEvent) => void) {
+  constructor(characters: CharacterModel[], onClick: (e: MouseEvent) => void) {
     this.init(characters)
     this.onClick = onClick
   }
 
-  init(characters: Character.Data[]) {
+  init(characters: CharacterModel[]) {
     this.domElement = BasicUiElement
       .createDomElement(this.html().trim())
     const classesSet = new Set(characters.map(char => char.className))

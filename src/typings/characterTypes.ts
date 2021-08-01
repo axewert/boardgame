@@ -13,6 +13,7 @@ export namespace Character {
     healthPerLevel: number
     resourcePerLevel: number
     equipmentRequirements: string[]
+    spells: number[]
   }
   export interface Position {
     world: string
