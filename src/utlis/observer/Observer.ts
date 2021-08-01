@@ -1,9 +1,11 @@
+import {Action} from "../../typings/observerActionTypes";
+
 export class Observer {
-  callback: () => void
+  callback: (action: Action) => void
   constructor(callback: () => void) {
     this.callback = callback
   }
-  update() {
-    this.callback()
+  update(action: Action) {
+    this.callback(action)
   }
 }

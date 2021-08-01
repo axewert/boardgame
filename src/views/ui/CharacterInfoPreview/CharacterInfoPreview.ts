@@ -44,15 +44,15 @@ export class CharacterInfoPreview {
   }
 
   setCharacter(character: CharacterView) {
+    if(this.character) this.character.model.scene.removeFromParent()
     this.character = character
     this.scene.add(this.character.model.scene)
 
-    this.camera.position.set(2.5,1.2,0)
+    this.camera.position.set(2.8,1.2,1)
     const point = new Vector3().copy(this.character.model.scene.position)
     this.controls.target = point
     point.y += 1
     this.camera.lookAt(point)
-    console.log(this.controls.getAzimuthalAngle())
   }
 
   render() {

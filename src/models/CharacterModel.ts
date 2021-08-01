@@ -27,10 +27,6 @@ export class CharacterModel {
     position: CharacterPositionModel
   ) {
     this.name = data.name
-    this.level = data.level || this.level
-    this.exp = data.exp || this.exp
-    this.currentHealth = data.currentHealth
-    this.currentResource = data.currentResource
     this.characterClass = characterClass
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook

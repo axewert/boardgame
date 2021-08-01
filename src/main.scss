@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
+body {
+  margin: 0;
+}
+.game {
+  width: 100vw;
+  height: 100vh;
+}
+h3 {
+  font-family: 'Gabriela', serif;
+  color: white;
+  font-size: 30px;
+  z-index: 5;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.icon {
+  cursor: pointer;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  &_druid {
+    background-image: url('assets/icons/classes/druid_icon.png');
+  }
+  &_hunter {
+    background-image: url('assets/icons/classes/hunter_icon.png')
+  }
+  &_mage {
+    background-image: url('assets/icons/classes/mage_icon.png')
+  }
+  &_paladin {
+    background-image: url('assets/icons/classes/paladin_icon.png')
+  }
+  &_priest {
+    background-image: url('assets/icons/classes/priest_icon.png')
+  }
+  &_rogue {
+    background-image: url('assets/icons/classes/rogue_icon.png')
+  }
+  &_shaman {
+    background-image: url('assets/icons/classes/shaman_icon.png')
+  }
+  &_warlock {
+    background-image: url('assets/icons/classes/warlock_icon.png')
+  }
+  &_warrior {
+    background-image: url('assets/icons/classes/warrior_icon.png')
+  }
+  &_alliance {
+    background-image: url('assets/img/alliance.png');
+  }
+  &_horde {
+    background-image: url('assets/img/horde.png');
+  }
+  &_human {
+    background-image: url('assets/img/human_icon.png');
+  }
+  &_dwarf {
+    background-image: url('assets/img/dwarf_icon.png');
+  }
+}
+

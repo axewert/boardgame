@@ -3,15 +3,9 @@ import {SpellBook} from './spellBookTypes'
 export namespace Character {
   export interface Data {
     name: string
-    currentHealth: number
-    currentResource: number
-    inventory: number[]
-    spells: SpellBook.Spell<string>[]
-    race: string
-    characterClass:string
-    position: Position
-    level?: number
-    exp?: number
+    className: string,
+    race: string,
+    gender: string
   }
   export interface Class {
     name: string
@@ -28,5 +22,11 @@ export namespace Character {
     x: number
     y: number
     z: number
+  }
+  export interface Race {
+    name: string,
+    classes: string[],
+    faction: string,
+    position: Position
   }
 }

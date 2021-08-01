@@ -2,12 +2,9 @@ import {Character} from "../typings/characterTypes";
 import {CharacterModel} from "./CharacterModel";
 import {Inventory} from "../typings/inventoryTypes";
 import {GameData} from "../typings/gameDataTypes";
-import {CharacterClassModel} from "./CharacterClassModel";
-import {SpellBookModel} from "./SpellBookModel";
-import {CharacterPositionModel} from "./CharacterPositionModel";
+
 import {Subject} from "../utlis/observer/Subject";
 import {Observer} from "../utlis/observer/Observer";
-import {log} from "util";
 import {Action, ActionTypes} from "../typings/observerActionTypes";
 
 
@@ -23,11 +20,7 @@ export class GameModel {
   }
   constructor() {}
   init() {
-    // this.load().then((data: GameData) => {
-    //   this.items = data.items
-    //   this.createCharacters(data)
-    //   this.start()
-    // })
+
   }
   createNewGame() {
     this.fetchData()
@@ -36,9 +29,9 @@ export class GameModel {
         this._items = data.items
         this._races = data.races
         this._classes = data.classes
-        this.createCharacters(data)
         this.notify({
           type: ActionTypes.ModelDataIsLoaded,
+          payload: data
         })
       })
   }

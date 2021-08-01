@@ -20,10 +20,8 @@ export class GameController {
   private handleAction(action: Action) {
     switch (action.type) {
       case ActionTypes.ModelDataIsLoaded: {
-        this.gameView.renderCharacterCreatorScreen(
-          'hunter',
-          'blood_elf'
-        )
+        const {characters, classes, races} = action.payload as GameData
+        this.gameView.renderCharacterCreatorScreen(characters, classes, races)
       }
     }
   }

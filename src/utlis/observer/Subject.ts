@@ -1,4 +1,5 @@
 import {Observer} from "./Observer";
+import {Action} from "../../typings/observerActionTypes";
 
 export class Subject {
   observers: Observer[] = []
@@ -9,7 +10,7 @@ export class Subject {
   unsubscribe(observer: Observer) {
     this.observers = this.observers.filter(obs => obs !== observer)
   }
-  notify() {
-    this.observers.forEach(obs => obs.update())
+  notify(action: Action) {
+    this.observers.forEach(obs => obs.update(action))
   }
 }

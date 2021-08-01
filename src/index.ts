@@ -1,10 +1,11 @@
 import {GameModel} from "./models/GameModel";
-import {StartScreenView} from "./views/StartScreenView";
 import {GameView} from "./views/GameView";
 import {GameController} from "./controllers/GameController";
+import (/*webpackChunkName: 'main-styles'*/'./main.scss')
 
-const root = document.body
+const root = document.querySelector('.game') as HTMLElement
 const game = new GameController(new GameModel(), new GameView(root))
 // @ts-ignore
 window.game = game
+
 
