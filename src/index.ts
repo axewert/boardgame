@@ -7,5 +7,3 @@ const root = document.querySelector('.game') as HTMLElement
 const game = new GameController(new GameModel(), new GameView(root))
 // @ts-ignore
 window.game = game
-
-

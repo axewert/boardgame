@@ -46,11 +46,7 @@ export class GameModel {
       .then(res => res.json())
       .then(world => {
         this.notify({
-          type: ActionTypes.WorldIsReady,
-          payload: {
-            characters: this.characters,
-            world
-          }
+          type: ActionTypes.WorldIsReady
         })
       })
   }
@@ -67,6 +63,7 @@ export class GameModel {
         }
       )
     })
+    this.activeCharacter = this.players[0].characters[0]
     this.cleanUp()
   }
   cleanUp() {
@@ -104,7 +101,7 @@ export class GameModel {
   unsubscribe(observer: Observer) {
     this.subject.unsubscribe(observer)
   }
-  notify<T>(action: Action<T>) {
+  notify(action: Action) {
     this.subject.notify(action)
   }
   get items() {

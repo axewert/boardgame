@@ -17,7 +17,7 @@ export class CharacterView {
     this.model.scene.traverse(child => {
       if(child.type === 'SkinnedMesh') {
         // @ts-ignore
-        (child as THREE.Mesh).material.metalness = 0.1
+        (child as THREE.Mesh).material = new THREE.MeshBasicMaterial({map: (child as THREE.Mesh).material.map})
         this.meshes.add(child as THREE.Mesh)
       }
     })

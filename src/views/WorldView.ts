@@ -9,6 +9,9 @@ export class WorldView {
   private readonly renderer = new THREE.WebGLRenderer()
   private readonly ambientLight = new THREE.AmbientLight(new THREE.Color('#ffffff'), 3)
   private readonly pointLight = new THREE.PointLight(new THREE.Color('#ffffff'), 1)
+  private  frustum = new THREE.Frustum()
+  private cachedTiles: THREE.Mesh[] = []
+  private tiles = new THREE.Group()
   private controls: OrbitControls
   constructor(private root: HTMLElement) {
     this.init()
@@ -22,36 +25,46 @@ export class WorldView {
     this.camera.position.set(-51.777089808924416, 231.7484010122725, -8971.85837463571)
     this.controls.target = new THREE.Vector3(-159.06925392911927, 80.09302927832343, -8851.895144103355)
     this.camera.lookAt(new THREE.Vector3(-159.06925392911927, 80.09302927832343, -8851.895144103355))
+    this.camera.updateProjectionMatrix()
     this.controls.screenSpacePanning = false
-
-
-    this.load(32,48).then(res => {
-      new THREE.TextureLoader().load(`assets/world/azeroth/eastern_kingdoms/elwynn_forest/tex_32_48.png`, tex => {
-        (res.scene.children[0] as THREE.Mesh).material = new THREE.MeshBasicMaterial({map: tex})
-        tex.flipY = false
-      })
-
-      this.scene.add(res.scene, this.camera, this.ambientLight)
-
-      this.controls.update()
+    this.loadTiles().then(() => {
+      this.scene.add(...this.cachedTiles)
     })
+  }
 
-    this.load(32,49).then(res => {
-      new THREE.TextureLoader().load(`assets/world/azeroth/eastern_kingdoms/elwynn_forest/tex_32_49.png`, tex => {
-        tex.flipY = false
-        // @ts-ignore
-        res.scene.children[0].material = new THREE.MeshBasicMaterial({map: tex})
-      })
-      this.scene.add(res.scene)
+  isFrustumCulled(tile: THREE.Object3D) {
+    this.camera.updateProjectionMatrix()
+    this.frustum.setFromProjectionMatrix( new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse))
+    return this.frustum.intersectsObject(tile)
+  }
+  setVisible() {
+    this.cachedTiles.forEach(tile => {
+      if(this.isFrustumCulled(tile)) tile.visible = false
     })
-
   }
-  loadTiles() {
-
+  getTiles(x: number, y: number) {
+    const tiles = []
+    for (let i = x - 1; i <= x + 1; i++) {
+      for (let j = y - 1; j <= y + 1; j++) {
+        tiles.push(`${i}_${j}`)
+      }
+    }
+    return tiles
   }
-  async load(x: number,y: number) {
-    return await new GLTFLoader().loadAsync(`assets/world/azeroth/eastern_kingdoms/elwynn_forest/${x}_${y}.gltf`)
-
+  async loadTiles() {
+    return Promise.all(this.getTiles(32,48).map(tileName => {
+      return this.load(tileName).then(res => {
+        this.cachedTiles.push(res)
+      })
+    }))
+  }
+  async load(tileName: string) {
+    const tile =  await new GLTFLoader().loadAsync(`assets/world/tiles/azeroth/eastern_kingdoms/${tileName}.gltf`)
+    const texture = await new THREE.TextureLoader().loadAsync(`assets/world/tiles/azeroth/eastern_kingdoms/textures/tex_${tileName}.png`)
+    texture.flipY = false
+    const mesh = tile.scene.getObjectByName(tileName) as THREE.Mesh
+    mesh.material = new THREE.MeshBasicMaterial({map: texture})
+    return mesh
   }
   render() {
     this.controls.update()

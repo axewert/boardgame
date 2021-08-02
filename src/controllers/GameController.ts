@@ -33,7 +33,6 @@ export class GameController {
         break
       }
       case ActionTypes.WorldIsReady: {
-        console.log(action.payload)
         this.gameView.renderMainGameScreen()
       }
     }
