@@ -25,6 +25,7 @@ export class GameController {
           {player: 'computer', characters: ['warrior']},
           {player: 'player', characters: ['hunter']}
         ])
+        // this.gameView.renderCharacterCreatorScreen(this.gameModel.characters)
         break
       }
       case ActionTypes.ViewClassControlIsClicked: {

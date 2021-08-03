@@ -66,7 +66,7 @@ export class WorldView {
     mesh.material = new THREE.MeshBasicMaterial({map: texture})
     return mesh
   }
-  render() {
+  render(clock: THREE.Clock) {
     this.controls.update()
     this.renderer.render(this.scene, this.camera)
   }

@@ -7,17 +7,18 @@ import {CharacterView} from "./CharacterView";
 import {CharacterModel} from "../models/CharacterModel";
 import {CharacterCreatorPanel} from "./ui/CharacterCreator/CharacterCreatorPanel";
 import {WorldView} from "./WorldView";
+import * as CANNON from 'cannon-es'
 
 export class GameView {
-  root: HTMLElement
-  subject = new Subject()
-  characterInfo: CharacterInfo
-  clock = new THREE.Clock()
-  activeCharacter: CharacterView
-  characters: CharacterView[] = []
-  characterCreator: CharacterCreatorPanel
-  worldView: WorldView
-  activeView: WorldView | CharacterInfo
+  private readonly root: HTMLElement
+  private readonly subject = new Subject()
+  private characterInfo: CharacterInfo
+  private readonly clock = new THREE.Clock()
+  private activeCharacter: CharacterView
+  private readonly characters: CharacterView[] = []
+  private characterCreator: CharacterCreatorPanel
+  private worldView: WorldView
+  private activeView: WorldView | CharacterInfo
   constructor(root: HTMLElement) {
     this.root = root
     this.init()
@@ -37,7 +38,7 @@ export class GameView {
       this.characterInfo.getDomElement(),
       this.characterCreator.getDomElement()
     )
-
+    this.activeView = this.characterInfo
     this.render()
     this.setActiveCharacter(characters[0])
   }
@@ -97,7 +98,7 @@ export class GameView {
 
   render() {
     requestAnimationFrame(this.render.bind(this))
-    this.activeView.render()
+    this.activeView.render(this.clock)
     if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
   }
 }

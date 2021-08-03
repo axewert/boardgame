@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {log} from "util";
 
 export class CharacterView {
   model: GLTF
@@ -17,10 +18,11 @@ export class CharacterView {
     this.model.scene.traverse(child => {
       if(child.type === 'SkinnedMesh') {
         // @ts-ignore
-        (child as THREE.Mesh).material = new THREE.MeshBasicMaterial({map: (child as THREE.Mesh).material.map})
+        (child as THREE.Mesh).material = new THREE.MeshBasicMaterial({map: (child as THREE.Mesh).material.map, transparent:true})
         this.meshes.add(child as THREE.Mesh)
       }
     })
+
     this.mixer = new THREE.AnimationMixer(this.meshes)
     this.animations = this.model.animations
     const clip = THREE.AnimationClip.findByName(this.animations, 'animation_0')

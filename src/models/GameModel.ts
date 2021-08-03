@@ -15,7 +15,7 @@ import {SpellBookModel} from "./SpellBookModel";
 
 export class GameModel {
   private _items: Inventory.Item[]
-  private characters: CharacterModel[] = []
+  characters: CharacterModel[] = []
   private _races: Character.Race[]
   private _classes: Character.Class[]
   private readonly subject = new Subject()
