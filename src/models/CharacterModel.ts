@@ -20,7 +20,7 @@ export class CharacterModel {
   private readonly spellBook: SpellBookModel
   private readonly _race: string
   characterClass: CharacterClassModel
-  private readonly position: CharacterPositionModel
+  private _position: CharacterPositionModel
   private readonly _gender: string;
   constructor(
     data: Character.Data,
@@ -34,7 +34,7 @@ export class CharacterModel {
     this.characterClass = characterClass
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook
-    this.position = position
+    this._position = position
   }
   addItem(item: Inventory.Item) {
     this.inventory.addItem(item)
@@ -70,5 +70,8 @@ export class CharacterModel {
   }
   get spells() {
     return this.spellBook.spells
+  }
+  get position() {
+    return this._position
   }
 }

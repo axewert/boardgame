@@ -8,7 +8,6 @@ export class SpellCard {
     this.init(spell)
   }
   init(spell: SpellBook.Spell<any>) {
-    console.log(spell)
     this.domElement = BasicUiElement.createDomElement(this.html(spell))
   }
   html({name, description}: SpellBook.Spell<any>) {

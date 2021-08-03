@@ -3,7 +3,7 @@ import {CharacterModel} from "./CharacterModel";
 import {CharacterClassModel} from "./CharacterClassModel";
 
 import {Inventory} from "../typings/inventoryTypes";
-import {GameData} from "../typings/gameDataTypes";
+import {GameData, Player} from "../typings/gameDataTypes";
 
 import {Subject} from "../utlis/observer/Subject";
 import {Observer} from "../utlis/observer/Observer";
@@ -15,22 +15,17 @@ import {SpellBookModel} from "./SpellBookModel";
 
 export class GameModel {
   private _items: Inventory.Item[]
-  private readonly characters: CharacterModel[] = []
+  characters: CharacterModel[] = []
   private _races: Character.Race[]
   private _classes: Character.Class[]
   private readonly subject = new Subject()
   private spells: SpellBook.Spell<any>[]
-  private readonly players = {
-    human: '',
-    computer: ''
-  }
+  private activeCharacter: CharacterModel
+  private players: Player<CharacterModel>[] = []
 
   constructor() {}
-  init() {
-
-  }
   createNewGame() {
-    this.fetchData()
+    this.fetchData('data')
       .then(res => res.json())
       .then((data: GameData)=> {
         this._items = data.items
@@ -44,10 +39,42 @@ export class GameModel {
         })
       })
   }
-  async fetchData() {
-    return await fetch(`${process.env.HOST}/data.json`)
-  }
 
+  play(players: Player<string>[]) {
+    this.initPlayers(players)
+    this.fetchData('world')
+      .then(res => res.json())
+      .then(world => {
+        this.notify({
+          type: ActionTypes.WorldIsReady
+        })
+      })
+  }
+  async fetchData(name:string) {
+    return await fetch(`${process.env.HOST}/${name}.json`)
+  }
+  initPlayers(players: Player<string>[]) {
+    players.forEach(playerObj => {
+      const {player, characters} = playerObj
+      this.players.push(
+        {
+          player,
+          characters: characters.map(charClass => this.getCharacterByClass(charClass))
+        }
+      )
+    })
+    this.activeCharacter = this.players[0].characters[0]
+    this.cleanUp()
+  }
+  cleanUp() {
+    const activeCharacters = this.players
+      .reduce((acc, current) => {
+        acc.push(...current.characters)
+        return acc
+      }, [])
+    this.characters = this.characters
+      .filter(character => activeCharacters.includes(character))
+  }
   createNewCharacter(character: Character.Data) {
     const position = this.races
       .find(race => race.name === character.race)
