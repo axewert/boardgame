@@ -1,23 +1,14 @@
-import {BasicUiElement} from "../BasicUiElement";
+import {BasicViewComponent} from "../BasicViewComponent";
 import {SpellBook} from "../../../typings/spellBookTypes";
 import {CharacterModel} from "../../../models/CharacterModel";
-import {SpellCard} from "../SpellCard/SpellCard";
+import {Card} from "../SpellCard/Card";
 import (/*webpackChunkName: 'character-info-card'*/'./styles.scss')
 
-export class CharacterInfoCard {
-  domElement: HTMLElement
-  cardsPlace: HTMLElement
-  constructor() {
-    this.init()
-  }
-  init() {
-    this.domElement = BasicUiElement
-      .createDomElement(this.html().trim())
-    this.cardsPlace = this.domElement.querySelector('.js-cards-place')
-  }
-  createCard(spell: SpellBook.Spell<any>) {
-    this.cardsPlace.append(new SpellCard(spell).getDomElement())
-  }
+export class CharacterInfoCard extends BasicViewComponent<any>{
+  protected domElement: HTMLElement
+  protected name = 'character-info-card'
+  private cardsPlace: HTMLElement
+
   html() {
     return `
       <div class="character-info-card">
@@ -28,10 +19,7 @@ export class CharacterInfoCard {
   setCharacter(character: CharacterModel) {
     this.cardsPlace.innerHTML = ''
     character.spells.forEach(spell => {
-      this.createCard(spell)
+      // this.createCard(spell)
     })
-  }
-  getDomElement() {
-    return this.domElement
   }
 }

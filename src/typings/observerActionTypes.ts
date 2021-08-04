@@ -9,7 +9,8 @@ export interface Action {
 export enum ActionTypes {
   ModelDataIsLoaded = 'ModelDataIsLoaded',
   ViewClassControlIsClicked = 'ViewClassControlIsClicked',
-  WorldIsReady = 'WorldIsReady'
+  WorldIsReady = 'WorldIsReady',
+  NewGameButtonIsClicked = 'NewGameButtonIsClicked'
 }
 
 export type ViewClassPanelInfo = {className: string}
