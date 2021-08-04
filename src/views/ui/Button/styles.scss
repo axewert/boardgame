@@ -1,4 +1,97 @@
+@import 'src/styles/variables';
+
 .button {
-  width: 70px;
-  height: 70px;
+  cursor: url('../../../assets/cursors/hand.cur'), pointer;
+  border: none;
+  font-weight: bold;
+  &__text {
+    position: relative;
+    z-index: 10;
+    font-family: 'Gabriela', serif;
+    color: white;
+    text-transform: uppercase;
+  }
+  &__bg {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    right: 5px;
+    border-radius: inherit;
+    &:before {
+      content: '';
+      position: absolute;
+      display: inline-flex;
+      top: 2px;
+      left: 2px;
+      bottom: 2px;
+      right: 2px;
+      border-radius: inherit;
+    }
+  }
+  &_main {
+    background-image: $brownGradientVertical;
+    border-radius: 6px;
+    position: relative;
+    width: 210px;
+    height: 45px;
+    padding: 2px;
+    box-sizing: border-box;
+    &:before {
+      content: '';
+      background-color: #7e5f58;
+      position: absolute;
+      display: inline-flex;
+      top: 2px;
+      left: 2px;
+      bottom: 2px;
+      right: 2px;
+      border-radius: inherit;
+    }
+    &:active {
+      .button__bg:after {
+        background: black;
+        opacity: 0.2;
+      }
+    }
+    &:hover {
+      .button__bg:after {
+        opacity: 0.1
+      }
+    }
+    .button__bg {
+      &:after {
+        content: '';
+        position: absolute;
+        opacity: 0;
+        display: inline-flex;
+        top: 2px;
+        left: 2px;
+        bottom: 2px;
+        right: 2px;
+        border-radius: inherit;
+        transition: all 100ms ease-in;
+        z-index: 8;
+        background: white;
+      }
+
+    }
+  }
+  &_purple {
+    .button__bg {
+      background-image: $purpleGradientVertical;
+      &:before {
+        background-image: $purpleGradientHorizontal;
+      }
+    }
+  }
+  &_green {
+    .button__bg {
+      background-image: $greenGradientVertical;
+      &:before {
+        background-image: $greenGradientHorizontal;
+      }
+    }
+  }
+
 }

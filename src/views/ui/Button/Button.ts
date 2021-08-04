@@ -1,23 +1,32 @@
-import {BasicUiElement} from "../BasicUiElement";
+import {BasicViewComponent} from "../BasicViewComponent";
+import {UI} from "../../../typings/uiElementTypes";
 
 import (/*webpackChunkName: 'button'*/'./styles.scss')
-export class Button {
-  private domElement: HTMLElement
-  constructor(name: string) {
-    this.init(name)
+
+export class Button extends BasicViewComponent<UI.ButtonProps>{
+  protected domElement: HTMLElement
+  protected name = 'button'
+  protected listeners: UI.Listener[]
+  constructor(props: UI.ButtonProps) {
+    super()
+    this.init(props)
   }
-  init(name: string) {
-    this.domElement = BasicUiElement
-      .createDomElement(this.html(name).trim())
+
+  protected init(props: UI.ButtonProps) {
+    super.init(props)
+    this.addListeners(props)
   }
-  html(name: string) {
+
+  protected html({modifiers, text, attributes, disabled, listeners}: UI.ButtonProps) {
     return `
-       <div class="button">
-        <div class="icon icon_${name}" data-charClass=${name}></div>
-      </div>
+      <button 
+        class="button${modifiers ? this.createModifiers(modifiers) : ''}"
+        ${disabled ? 'disabled' : ''} 
+        ${attributes? this.createDataAttributes(attributes) : ''}
+      >
+        <span class="button__text">${text}</span>
+        <span class="button__bg"></span>
+      </button>
     `
-  }
-  getDomElement() {
-    return this.domElement
   }
 }

@@ -1,0 +1,16 @@
+//==========colors==========
+$purple: rgb(185, 33, 196);
+$purpleDark: rgb(76, 13, 122);
+$brown: rgb(88,60,36);
+$green: rgb(33, 196, 93);
+$greenDark: rgb(13, 122, 84);
+$gray: rgb(97, 97, 97);
+$grayDark: rgb(56, 56, 56);
+//==========gradients==========
+$purpleGradientHorizontal: linear-gradient(to right, $purpleDark, $purple, $purpleDark);
+$purpleGradientVertical: linear-gradient(180deg,$purple,$purpleDark);
+$brownGradientVertical: linear-gradient(180deg, white, $brown);
+$greenGradientHorizontal: linear-gradient(to right, $greenDark, $green, $greenDark);
+$greenGradientVertical: linear-gradient(180deg, $green,$greenDark);
+$grayGradientHorizontal: linear-gradient(to right, $grayDark, $gray, $grayDark);
+

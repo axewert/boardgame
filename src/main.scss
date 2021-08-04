@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
-
+@import 'src/styles/variables.scss';
 body {
   margin: 0;
   cursor: url('./assets/cursors/hand.cur'), pointer;
@@ -64,4 +64,5 @@ h3 {
     background-image: url('assets/img/dwarf_icon.png');
   }
 }
+
 

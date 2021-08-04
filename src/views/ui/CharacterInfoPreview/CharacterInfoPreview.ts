@@ -38,7 +38,6 @@ export class CharacterInfoPreview {
     this.pointLight.position.set(1,2,1)
   }
 
-
   private setControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableZoom = false

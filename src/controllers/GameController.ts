@@ -2,7 +2,6 @@ import {GameModel} from "../models/GameModel";
 import {GameView} from "../views/GameView";
 import {Observer} from "../utlis/observer/Observer";
 import {Action, ActionTypes, ViewClassPanelInfo} from "../typings/observerActionTypes";
-import {CharacterModel} from "../models/CharacterModel";
 
 export class GameController {
   private readonly observer = new Observer(this.update.bind(this))
@@ -15,17 +14,16 @@ export class GameController {
   init() {
     this.gameModel.subscribe(this.observer)
     this.gameView.subscribe(this.observer)
-    this.gameModel.createNewGame()
-
+    this.gameView.renderStartScreen()
   }
   private handleAction(action: Action) {
     switch (action.type) {
+      case ActionTypes.NewGameButtonIsClicked: {
+        this.gameModel.createNewGame()
+        break
+      }
       case ActionTypes.ModelDataIsLoaded: {
-        this.gameModel.play([
-          {player: 'computer', characters: ['warrior']},
-          {player: 'player', characters: ['hunter']}
-        ])
-        // this.gameView.renderCharacterCreatorScreen(this.gameModel.characters)
+        this.gameView.renderNewGameCreatorView()
         break
       }
       case ActionTypes.ViewClassControlIsClicked: {
@@ -34,7 +32,8 @@ export class GameController {
         break
       }
       case ActionTypes.WorldIsReady: {
-        this.gameView.renderMainGameScreen()
+        this.gameView.renderWorldScreen()
+        break
       }
     }
   }
