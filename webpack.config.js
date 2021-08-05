@@ -20,16 +20,26 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   optimization: {
-    splitChunks: {chunks: "all"}
+    splitChunks: {
+      chunks: "all",
+    },
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/img/[name][hash][ext]'
+        }
       },
       {
         test: /\.(scss|css)$/,
@@ -53,7 +63,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({template: "src/index.html"}),
     new webpack.DefinePlugin(getEnvKeys()),
-    new MiniCssExtractPlugin({filename: '[name][hash].css'}),
+    new MiniCssExtractPlugin({filename: 'styles/[name][hash].css'}),
     new CopyPlugin({
       patterns: [
         { from: "src/assets", to: "assets" }

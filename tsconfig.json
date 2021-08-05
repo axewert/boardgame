@@ -7,7 +7,6 @@
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "declaration": true
   },
   "include": ["src/**/**/*", "./modulesDeclarations.d.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
