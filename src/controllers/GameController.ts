@@ -23,7 +23,7 @@ export class GameController {
         break
       }
       case ActionTypes.ModelDataIsLoaded: {
-        this.gameView.renderNewGameCreatorView()
+        this.gameView.renderCreateNewGame()
         break
       }
       case ActionTypes.ViewClassControlIsClicked: {
@@ -34,6 +34,23 @@ export class GameController {
       case ActionTypes.WorldIsReady: {
         this.gameView.renderWorldScreen()
         break
+      }
+      case ActionTypes.NewCharacterButtonIsClicked: {
+        this.gameView.renderCreateNewCharacter()
+        break
+      }
+      case ActionTypes.CharacterIsCreated: {
+        this.gameView.renderCreateNewCharacter()
+        break
+      }
+      case ActionTypes.NewGameIsAccepted: {
+        this.gameModel.play([
+            {
+              player: "player",
+              characters: ['hunter']
+            }
+          ]
+        )
       }
     }
   }

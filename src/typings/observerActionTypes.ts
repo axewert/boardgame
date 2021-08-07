@@ -10,7 +10,10 @@ export enum ActionTypes {
   ModelDataIsLoaded = 'ModelDataIsLoaded',
   ViewClassControlIsClicked = 'ViewClassControlIsClicked',
   WorldIsReady = 'WorldIsReady',
-  NewGameButtonIsClicked = 'NewGameButtonIsClicked'
+  NewGameButtonIsClicked = 'NewGameButtonIsClicked',
+  NewCharacterButtonIsClicked = 'NewCharacterButtonIsClicked',
+  CharacterIsCreated = 'CharacterIsCreated',
+  NewGameIsAccepted = 'NewGameIsAccepted'
 }
 
 export type ViewClassPanelInfo = {className: string}

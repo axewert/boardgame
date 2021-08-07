@@ -2,47 +2,44 @@ import * as THREE from 'three'
 import {Observer} from "../utlis/observer/Observer";
 import {Action, ActionTypes} from "../typings/observerActionTypes";
 import {Subject} from "../utlis/observer/Subject";
-import {CharacterInfoView} from "./CharacterInfoView/CharacterInfoView";
 import {CharacterView} from "./CharacterView";
 import {CharacterModel} from "../models/CharacterModel";
-import {CharacterSelectorPanel} from "./ui/CharacterSelectorPanel/CharacterSelectorPanel";
 import {WorldView} from "./WorldView";
-import {StartScreenView} from "./StartScreenView/StartScreenView";
-import {BasicView} from "./ui/BasicView";
+import {StartScreen} from "./screens/StartScreen/StartScreen";
+import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame";
+import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo";
 
 export class GameView {
   private readonly root: HTMLElement
   private readonly subject = new Subject()
-  private characterInfo: CharacterInfoView
   private readonly clock = new THREE.Clock()
   private activeCharacter: CharacterView
   private readonly characters: CharacterView[] = []
-  private characterCreator: CharacterSelectorPanel
   private worldView: WorldView
-  private activeView: BasicView
   private needsUpdate = false
+  private activeScreen: StartScreen | CreateNewGame
+  private characterInfo: CharacterInfo
   constructor(root: HTMLElement) {
     this.root = root
   }
 
   renderStartScreen() {
-    this.clearScreen()
-    this.activeView = new StartScreenView(
-      {
-        listeners: [
-          {
-            name: 'click',
-            handler: this.handleStartScreenClick.bind(this)
-          }
-        ]
-      }
-    )
-    this.root.append(this.activeView.getDomElement())
+    this.activeScreen = new StartScreen(this.root, this.notify.bind(this))
   }
+  renderCreateNewGame() {
+    this.activeScreen.destroy()
+    this.root.innerHTML = null
+    this.activeScreen = new CreateNewGame(this.root, this.notify.bind(this))
+    this.characterInfo = new CharacterInfo(this.root, this.notify.bind(this))
+  }
+  renderCreateNewCharacter() {
+    this.characterInfo.toggleVisible()
+  }
+  setActiveScreen() {
 
+  }
   clearScreen() {
-    if(this.activeView) this.activeView.destroy()
-    this.root.innerHTML = ''
+
   }
 
   handleStartScreenClick(evt: MouseEvent) {
@@ -54,11 +51,9 @@ export class GameView {
   }
   renderNewGameCreatorView() {
     this.clearScreen()
-    
   }
   renderCharacterSelectorScreen(characters: CharacterModel[]) {
     this.clearScreen()
-    this.activeView = new CharacterInfoView()
   }
   renderWorldScreen() {
     this.createWorld()
@@ -70,7 +65,11 @@ export class GameView {
     this.worldView = new WorldView(this.root)
   }
   renderWorld() {
-
+    this.activeScreen.destroy()
+    this.root.innerHTML = null
+    this.root.append(this.worldView.domElement)
+    this.needsUpdate = true
+    this.render()
   }
   updateWorld() {
 
@@ -78,7 +77,6 @@ export class GameView {
   setActiveCharacter(character: CharacterModel) {
     this.getCharacter(character).then(char => {
       this.activeCharacter = char
-
     })
   }
 
@@ -118,6 +116,8 @@ export class GameView {
   render() {
     if(!this.needsUpdate) return false
     requestAnimationFrame(this.render.bind(this))
+    if (this.worldView) this.worldView.render(this.clock)
     if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
+
   }
 }

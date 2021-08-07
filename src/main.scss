@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
 @import 'src/styles/variables.scss';
 body {
   margin: 0;
@@ -64,5 +64,40 @@ h3 {
     background-image: url('assets/img/dwarf_icon.png');
   }
 }
+.create-game {
+  width: 100%;
+  height: 100%;
+  &__section {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    height: 50%;
+    &_alliance {
+      background: darkblue;
+    }
+    &_horde {
+      background: crimson;
+    }
+  }
 
+  &__add-character {
+    border: 2px dotted aqua;
+  }
+}
+.create-game-character {
+  &__body {
+
+  }
+  &__footer {
+
+  }
+}
+.character-info {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  &_hidden {
+    display: none;
+  }
+}
 
