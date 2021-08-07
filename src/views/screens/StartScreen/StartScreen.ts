@@ -6,7 +6,7 @@ import {Action, ActionTypes} from "../../../typings/observerActionTypes";
 export class StartScreen {
   menu: BasicComponent
   buttons: BasicComponent[] = []
-  components: BasicComponent[]
+  container: BasicComponent
   constructor(private root: HTMLElement, private evtHandler: (action: Action) => void) {
     this.init()
   }
@@ -24,11 +24,11 @@ export class StartScreen {
       })
       this.buttons.push(button)
     })
-
+    this.container = new BasicComponent('<div class="start-screen"></div>')
     this.menu = new BasicComponent(Menu()).add(...this.buttons)
-
+    this.container.add(this.menu)
     this.root.append(
-      this.menu.domElement
+      this.container.domElement
     )
   }
   onMenuButtonClick(evt: Event) {
@@ -37,6 +37,6 @@ export class StartScreen {
     })
   }
   destroy() {
-    this.menu.destroy()
+    this.container.destroy()
   }
 }

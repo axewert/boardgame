@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import {Observer} from "../utlis/observer/Observer";
-import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {Action} from "../typings/observerActionTypes";
 import {Subject} from "../utlis/observer/Subject";
 import {CharacterView} from "./CharacterView";
 import {CharacterModel} from "../models/CharacterModel";
@@ -42,19 +42,7 @@ export class GameView {
 
   }
 
-  handleStartScreenClick(evt: MouseEvent) {
-    if ((evt.currentTarget as HTMLElement).dataset.type === 'new-game') {
-      this.notify({
-        type: ActionTypes.NewGameButtonIsClicked
-      })
-    }
-  }
-  renderNewGameCreatorView() {
-    this.clearScreen()
-  }
-  renderCharacterSelectorScreen(characters: CharacterModel[]) {
-    this.clearScreen()
-  }
+
   renderWorldScreen() {
     this.createWorld()
     this.renderWorld()
@@ -71,24 +59,8 @@ export class GameView {
     this.needsUpdate = true
     this.render()
   }
-  updateWorld() {
+  createCharacters(characters: CharacterModel[]) {
 
-  }
-  setActiveCharacter(character: CharacterModel) {
-    this.getCharacter(character).then(char => {
-      this.activeCharacter = char
-    })
-  }
-
-  handleCreatorPanelClick(e: MouseEvent) {
-    const className = (e.target as HTMLElement).dataset.charclass
-    if(className === this.activeCharacter.className) return false
-    this.notify({
-      type: ActionTypes.ViewClassControlIsClicked,
-      payload: {
-        className
-      }
-    })
   }
 
   async getCharacter({name, className, race, gender}: CharacterModel) {

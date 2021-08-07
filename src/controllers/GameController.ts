@@ -24,11 +24,7 @@ export class GameController {
       }
       case ActionTypes.ModelDataIsLoaded: {
         this.gameView.renderCreateNewGame()
-        break
-      }
-      case ActionTypes.ViewClassControlIsClicked: {
-        const {className} = action.payload as ViewClassPanelInfo
-        this.gameView.setActiveCharacter(this.gameModel.getCharacterByClass(className))
+
         break
       }
       case ActionTypes.WorldIsReady: {

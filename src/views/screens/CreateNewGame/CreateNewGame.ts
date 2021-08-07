@@ -6,10 +6,12 @@ export class CreateNewGame {
   sections: BasicComponent[] = []
   addNewCharacter: BasicComponent[] = []
   acceptButton: BasicComponent
+  container: BasicComponent
   constructor(private root: HTMLElement, private evtHandler: (action: Action) => void) {
     this.init()
   }
   init() {
+    this.container = new BasicComponent('<div class="create-game"></div>');
     ['alliance', 'horde'].forEach(faction => {
       const section = new BasicComponent(this.section(faction))
       const addCharacter = new BasicComponent(this.addCharacter())
@@ -28,9 +30,9 @@ export class CreateNewGame {
       name: 'click',
       handler: this.handleAcceptNewGame.bind(this)
     })
+    this.container.add(...this.sections, this.acceptButton)
     this.root.append(
-      ...this.sections.map(section => section.domElement),
-      this.acceptButton.domElement
+      this.container.domElement
     )
   }
   addCharacter() {
@@ -55,6 +57,6 @@ export class CreateNewGame {
     })
   }
   destroy() {
-    this.addNewCharacter.forEach(el => el.destroy())
+    this.container.destroy()
   }
 }

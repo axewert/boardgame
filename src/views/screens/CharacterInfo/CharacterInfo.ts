@@ -4,14 +4,14 @@ import {BasicScene} from "../../scenes/BasicScene";
 import {Button} from "../../components/Button/Button";
 
 export class CharacterInfo {
-  characterInfoContainer: BasicComponent
+  container: BasicComponent
   characterPreview: BasicScene
   acceptButton: BasicComponent
   constructor(private root: HTMLElement, private evtHandler: (action: Action) => void) {
     this.init()
   }
   init() {
-    this.characterInfoContainer = new BasicComponent('<div class="character-info character-info_hidden"></div>')
+    this.container = new BasicComponent('<div class="character-info character-info_alliance"></div>')
     this.acceptButton = new BasicComponent(Button({
       text: 'OK',
       modifiers: ['main', 'purple']
@@ -20,13 +20,13 @@ export class CharacterInfo {
       name: 'click',
       handler: this.handleAcceptButtonClick.bind(this)
     })
-    this.characterInfoContainer.add(this.acceptButton)
+    this.container.add(this.acceptButton)
     this.root.append(
-      this.characterInfoContainer.domElement,
+      this.container.domElement,
     )
   }
   toggleVisible() {
-    this.characterInfoContainer.domElement.classList.toggle('character-info_hidden')
+    this.container.domElement.classList.toggle('character-info_visible')
   }
   handleAcceptButtonClick() {
     this.evtHandler({
@@ -34,6 +34,6 @@ export class CharacterInfo {
     })
   }
   destroy() {
-
+    this.container.destroy()
   }
 }
