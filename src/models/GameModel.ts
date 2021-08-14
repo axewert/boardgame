@@ -22,7 +22,6 @@ export class GameModel {
   private spells: SpellBook.Spell<any>[]
   private _activeCharacter: CharacterModel
   private players: Player<CharacterModel>[] = []
-
   constructor() {}
 
   createNewGame() {

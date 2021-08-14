@@ -19,7 +19,7 @@ export class Loader {
   }
   runOnBackground() {
     const {url, name, onLoad} = this.queue.pop()
-    this.load(url).then(res => {
+    this.load(url, name).then(res => {
       this.lastLoaded = name
       onLoad(res)
       if (!this.onPause && this.queue.length) this.runOnBackground()
@@ -30,15 +30,19 @@ export class Loader {
     const toLoad = newQueue.map(task => task.name)
     this.queue.filter(task => !toLoad.includes(task.name))
     newQueue.filter(task => task.name !== this.lastLoaded)
-    return Promise.all(newQueue.map(task => this.load(task.url)))
+    return Promise.all(newQueue.map(task => {
+        const {url, name} = task
+        return this.load(url, name)
+      }))
       .then(res => {
         this.onPause = false
-        this.runOnBackground()
+        if(this.queue) this.runOnBackground()
         return res
       })
   }
-  async load(url: string) {
+  async load(url: string, name: string, onProgress?: () => number) {
     return await this.loader.loadAsync(url).then(gltf => {
+      gltf.scene.name = name
       gltf.scene.traverse(child => {
         if (child.type.match(/Mesh/)) {
           (child as THREE.Mesh).material = new THREE.MeshBasicMaterial({
@@ -50,4 +54,6 @@ export class Loader {
       return gltf
     })
   }
+
+
 }

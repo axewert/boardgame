@@ -30,6 +30,10 @@ module.exports = {
       chunks: "all",
     },
   },
+  watch: true,
+  watchOptions: {
+    ignored: /node_modules/,
+  },
   module: {
     rules: [
       {

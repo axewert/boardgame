@@ -3,6 +3,7 @@
   height: 100%;
   left: 0;
   display: flex;
+  pointer-events: auto;
   &_horizontal {
     flex-direction: column;
     justify-content: center;

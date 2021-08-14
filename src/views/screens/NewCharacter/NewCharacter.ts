@@ -37,13 +37,20 @@ export class NewCharacter {
       if (isExist(name)) return
       const button = new BasicComponent(
         Button({
-          modifiers: ['round']
+          modifiers: ['round'],
+          attributes: [{
+            className: name
+          }]
         }),
         name
       )
       button.add(new BasicComponent(
         `<span class="icon icon_${name}"></span>`
       ))
+      button.addListeners({
+        name: 'click',
+        handler: this.handleButtonClick.bind(this)
+      })
       this.buttons.push(button)
     })
     this.panel.add(...this.buttons)
@@ -58,5 +65,8 @@ export class NewCharacter {
       }
       return isNeed(button.name)
     })
+  }
+  handleButtonClick() {
+    console.log('click')
   }
 }

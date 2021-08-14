@@ -20,6 +20,7 @@ self.addEventListener('fetch', (evt) => {
 const cacheFirst = async (req: Request) => {
   const cached = await caches.match(req)
   return cached ?? await fetch(req).then(res => {
+    console.log(res.body.getReader())
     const copy = res.clone()
     caches.open(staticCacheName).then(cache => cache.put(req, copy))
     return res

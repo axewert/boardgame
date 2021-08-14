@@ -40,12 +40,34 @@ export class GameView {
   openNewCharacterScreen() {
 
   }
-  openCreateNewCharacter(characters: CharacterModel[]) {
-    this.characterInfo.open()
-    this.newCharacter.setButtons(characters)
-    this.newCharacter.open()
-    this.needsUpdate = true
-    this.render()
+  private async checkIfLoaded(characters: CharacterModel[]) {
+    const names = this.characters.map(char => char.scene.name)
+    const notLoaded = characters.filter(char => !names.includes(char.name))
+    if (!notLoaded) return true
+    return this.loader.loadNow(notLoaded.map(character => {
+      const {name, className, race, gender} = character
+      return {
+        url: `assets/characters/${race}/${className}/${gender}/model.gltf`,
+        name,
+        onLoad: this.addCharacter.bind(this)
+      }
+    }))
+  }
+  openCreateNewCharacter(characters: CharacterModel[], activeCharacter?: CharacterModel) {
+    this.checkIfLoaded(characters)
+      .then(() => {
+        this.characterInfo.character = this.characters
+          .find(character => {
+            return character.scene.name === activeCharacter.name
+          })
+          .scene
+        this.newCharacter.setButtons(characters)
+        this.characterInfo.open()
+        this.newCharacter.open()
+        this.needsUpdate = true
+        this.render()
+      })
+
   }
   closeCreateNewCharacter() {
     this.characterInfo.close()
