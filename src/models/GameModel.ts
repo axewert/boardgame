@@ -63,7 +63,6 @@ export class GameModel {
   }
   play() {
     this.characters = this.characters.filter(character => character.player)
-    console.log(this.characters)
     this.fetchData('world')
       .then(res => res.json())
       .then(world => {

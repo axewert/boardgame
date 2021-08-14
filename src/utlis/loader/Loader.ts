@@ -1,5 +1,6 @@
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three'
+import {ifError} from "assert";
 
 export interface LoaderTask {
   name: string
@@ -10,37 +11,46 @@ export interface LoaderTask {
 export class Loader {
   private readonly loader = new GLTFLoader()
   onPause = false
-  queue: LoaderTask[] = []
+  loadQueue: LoaderTask[] = []
+  fetchQueue: LoaderTask[] = []
   lastLoaded: string
   isBusy = false
   addBackgroundTask(newQueue: LoaderTask[]) {
-    this.queue.push(...newQueue)
+    this.loadQueue.push(...newQueue)
     if(!this.onPause && !this.isBusy) this.runOnBackground()
   }
   runOnBackground() {
-    const {url, name, onLoad} = this.queue.pop()
-    this.load(url, name).then(res => {
+    const {url, name, onLoad} = this.loadQueue.pop()
+    this.load({url, name, onLoad}).then(res => {
       this.lastLoaded = name
       onLoad(res)
-      if (!this.onPause && this.queue.length) this.runOnBackground()
+      if (!this.onPause && this.loadQueue.length) this.runOnBackground()
     })
   }
   loadNow(newQueue: LoaderTask[]) {
     this.onPause = true
     const toLoad = newQueue.map(task => task.name)
-    this.queue.filter(task => !toLoad.includes(task.name))
+    this.loadQueue.filter(task => !toLoad.includes(task.name))
     newQueue.filter(task => task.name !== this.lastLoaded)
     return Promise.all(newQueue.map(task => {
-        const {url, name} = task
-        return this.load(url, name)
+        return this.load(task)
       }))
       .then(res => {
         this.onPause = false
-        if(this.queue) this.runOnBackground()
+        if(this.loadQueue) this.runOnBackground()
         return res
       })
   }
-  async load(url: string, name: string, onProgress?: () => number) {
+  fetchOnBackground(newFetchQueue: LoaderTask[]) {
+    this.fetchQueue.push(...newFetchQueue)
+    if (!this.onPause && !this.isBusy) this.fetch(this.fetchQueue.pop())
+  }
+  async fetch({url,name,onLoad}: LoaderTask) {
+    fetch(url).then(() => {
+      if (this.fetchQueue) this.fetch(this.fetchQueue.pop())
+    })
+  }
+  async load({url,name,onLoad}: LoaderTask) {
     return await this.loader.loadAsync(url).then(gltf => {
       gltf.scene.name = name
       gltf.scene.traverse(child => {

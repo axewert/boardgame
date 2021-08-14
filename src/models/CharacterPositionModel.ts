@@ -8,6 +8,7 @@ export class CharacterPositionModel {
   private readonly x: number
   private readonly y: number
   private readonly z: number
+  tile: number[] = [32,48]
   constructor(position: Character.Position) {
     this.world = position.world
     this.continent = position.continent

@@ -39,7 +39,7 @@ export class WorldScene {
     })
   }
   handlePointerDown(evt: PointerEvent) {
-    
+
   }
   isFrustumCulled(tile: THREE.Object3D) {
     this.camera.updateProjectionMatrix()
@@ -69,7 +69,7 @@ export class WorldScene {
   }
   async load(tileName: string) {
     const tile =  await new GLTFLoader().loadAsync(`assets/world/tiles/azeroth/eastern_kingdoms/${tileName}.gltf`)
-    const texture = await new THREE.TextureLoader().loadAsync(`assets/world/tiles/azeroth/eastern_kingdoms/textures/tex_${tileName}.png`)
+    const texture = await new THREE.TextureLoader().loadAsync(`assets/world/tiles/azeroth/eastern_kingdoms/textures/tex_${tileName}.webp`)
     texture.flipY = false
     const mesh = tile.scene.getObjectByName(tileName) as THREE.Mesh
     mesh.material = new THREE.MeshBasicMaterial({map: texture})

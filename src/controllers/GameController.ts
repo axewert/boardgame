@@ -47,8 +47,8 @@ export class GameController {
         break
       }
       case ActionTypes.NewActiveCharacterIsSelected: {
-        const character = this.gameModel.getCharacterById(+action.payload)
-        this.gameView.setActiveCharacter(character)
+        this.gameModel.activeCharacter = this.gameModel.getCharacterById(+action.payload)
+        this.gameView.setActiveCharacter(this.gameModel.activeCharacter)
         break
       }
       case ActionTypes.CharactersIsLoaded: {

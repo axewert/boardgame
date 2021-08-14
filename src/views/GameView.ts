@@ -56,7 +56,7 @@ export class GameView {
     }))
   }
   openCreateNewCharacter(characters: CharacterModel[], activeCharacter: CharacterModel) {
-    this.characterInfo.character = this.getCharacterByName(activeCharacter.name)
+    this.setActiveCharacter(activeCharacter)
     this.newCharacter.setButtons(characters)
     this.characterInfo.open()
     this.newCharacter.open()
@@ -101,12 +101,15 @@ export class GameView {
     })
     this.loader.addBackgroundTask(tasks)
   }
+  preloadTiles() {
 
+  }
   addCharacter(character: GLTF) {
     this.characters.push(new CharacterScene(character))
   }
-  setActiveCharacter({name}: CharacterModel) {
+  setActiveCharacter({name,position}: CharacterModel) {
     this.characterInfo.character = this.getCharacterByName(name)
+    console.log(position.tile)
   }
   subscribe(observer: Observer) {
     this.subject.subscribe(observer)
