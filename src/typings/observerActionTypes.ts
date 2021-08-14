@@ -3,7 +3,7 @@ import {CharacterModel} from "../models/CharacterModel";
 
 export interface Action {
   type: ActionTypes
-  payload?: GameData | CharacterModel[] | ViewClassPanelInfo
+  payload?: GameData | CharacterModel[] | ViewClassPanelInfo | string
 }
 
 export enum ActionTypes {
@@ -13,7 +13,8 @@ export enum ActionTypes {
   NewGameButtonIsClicked = 'NewGameButtonIsClicked',
   NewCharacterButtonIsClicked = 'NewCharacterButtonIsClicked',
   CharacterIsCreated = 'CharacterIsCreated',
-  NewGameIsAccepted = 'NewGameIsAccepted'
+  NewGameIsAccepted = 'NewGameIsAccepted',
+  CharactersIsLoaded = 'CharactersIsLoaded'
 }
 
 export type ViewClassPanelInfo = {className: string}

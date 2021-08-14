@@ -1,11 +1,12 @@
 import {Action, ActionTypes} from "../../../typings/observerActionTypes";
 import {BasicComponent} from "../../components/BasicComponent";
-import {BasicScene} from "../../scenes/BasicScene";
 import {Button} from "../../components/Button/Button";
+import {CharacterInfoPreview} from "../../scenes/CharacterInfoPreview/CharacterInfoPreview";
+import * as THREE from 'three'
 
 export class CharacterInfo {
   container: BasicComponent
-  characterPreview: BasicScene
+  characterPreview = new CharacterInfoPreview(300, 600)
   acceptButton: BasicComponent
   constructor(private root: HTMLElement, private evtHandler: (action: Action) => void) {
     this.init()
@@ -20,11 +21,19 @@ export class CharacterInfo {
       name: 'click',
       handler: this.handleAcceptButtonClick.bind(this)
     })
+    this.container.domElement.append(
+      this.characterPreview.domElement
+    )
     this.container.add(this.acceptButton)
     this.root.append(
       this.container.domElement,
     )
   }
+
+  set character(character: THREE.Group) {
+    this.characterPreview.character = character
+  }
+
   toggleVisible() {
     this.container.domElement.classList.toggle('character-info_visible')
   }
@@ -35,5 +44,8 @@ export class CharacterInfo {
   }
   destroy() {
     this.container.destroy()
+  }
+  render() {
+    this.characterPreview.render()
   }
 }

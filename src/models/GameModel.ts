@@ -22,8 +22,9 @@ export class GameModel {
   private spells: SpellBook.Spell<any>[]
   private activeCharacter: CharacterModel
   private players: Player<CharacterModel>[] = []
-
+  charactersCacheName = 'characters-cache-v1'
   constructor() {}
+
   createNewGame() {
     this.fetchData('data')
       .then(res => res.json())
@@ -37,9 +38,43 @@ export class GameModel {
           type: ActionTypes.ModelDataIsLoaded,
           payload: this.characters
         })
+        this.preloadCharacters().then(() => {
+          this.notify({
+              type: ActionTypes.CharactersIsLoaded,
+              payload: this.charactersCacheName
+            })
+        })
       })
   }
+  async preloadCharacters() {
+    const manifests = await Promise.all(this.characters.map(character => {
+      return this.getCharacterFiles(character)
+    }))
 
+  }
+  get cache() {
+    return caches.open(this.charactersCacheName)
+  }
+  async getCharacterFiles({race, className, gender}:CharacterModel) {
+    const url = `assets/characters/${race}/${className}/${gender}`
+    const getFilePath = (fileName: string) => {
+      return `${process.env.HOST}/${url}/${fileName}`
+    }
+    const baseFiles = [
+      "model.bin",
+      "model.gltf",
+      "model0.bin",
+      "model1.bin",
+      "model2.bin",
+      "animations.json"
+    ]
+    return await fetch(`${url}/manifest.json`).then(res => res.json()).then(data => {
+      return [
+        ...data.files.map(getFilePath),
+        ...baseFiles.map(getFilePath)
+      ]
+    })
+  }
   play(players: Player<string>[]) {
     this.initPlayers(players)
     this.fetchData('world')
@@ -51,7 +86,7 @@ export class GameModel {
       })
   }
   async fetchData(name:string) {
-    return await fetch(`${process.env.HOST}/${name}.json`)
+    return await fetch(`${process.env.DB}/${name}.json`)
   }
   initPlayers(players: Player<string>[]) {
     players.forEach(playerObj => {
@@ -76,12 +111,16 @@ export class GameModel {
       .filter(character => activeCharacters.includes(character))
   }
   createNewCharacter(character: Character.Data) {
+    const isExist = this.characters.find(char => char.name === character.name)
+    if(isExist) return
+
     const position = this.races
       .find(race => race.name === character.race)
       .position
     const classData = this.classes
       .find(classObj => classObj.name === character.className)
     const spells = this.spells.filter(spell => classData.spells.includes(spell.id))
+
     this.characters.push(new CharacterModel(
       character,
       new CharacterClassModel(classData),
@@ -115,5 +154,8 @@ export class GameModel {
   }
   getCharacterByClass(className: string) {
     return this.characters.find(character => character.className === className)
+  }
+  getCharactersBuyFaction(faction: string) {
+    return this.characters.filter(character => character.faction === faction)
   }
 }

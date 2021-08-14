@@ -5,7 +5,8 @@ export namespace Character {
     name: string
     className: string,
     race: string,
-    gender: string
+    gender: string,
+    faction: string
   }
   export interface Class {
     name: string

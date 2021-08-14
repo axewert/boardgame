@@ -1,24 +1,25 @@
 import * as THREE from 'three'
-import {Observer} from "../utlis/observer/Observer";
-import {Action} from "../typings/observerActionTypes";
-import {Subject} from "../utlis/observer/Subject";
-import {CharacterView} from "./CharacterView";
-import {CharacterModel} from "../models/CharacterModel";
-import {WorldView} from "./WorldView";
-import {StartScreen} from "./screens/StartScreen/StartScreen";
-import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame";
-import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo";
+import {Observer} from "../utlis/observer/Observer"
+import {Action} from "../typings/observerActionTypes"
+import {Subject} from "../utlis/observer/Subject"
+import {CharacterModel} from "../models/CharacterModel"
+import {WorldView} from "./WorldView"
+import {StartScreen} from "./screens/StartScreen/StartScreen"
+import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame"
+import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo"
+import {GLTF} from "three/examples/jsm/loaders/GLTFLoader"
+import {Loader} from "../utlis/loader/Loader"
 
 export class GameView {
   private readonly root: HTMLElement
   private readonly subject = new Subject()
   private readonly clock = new THREE.Clock()
-  private activeCharacter: CharacterView
-  private readonly characters: CharacterView[] = []
+  private characters: GLTF[] = []
   private worldView: WorldView
   private needsUpdate = false
   private activeScreen: StartScreen | CreateNewGame
   private characterInfo: CharacterInfo
+  private readonly loader = new Loader()
   constructor(root: HTMLElement) {
     this.root = root
   }
@@ -26,18 +27,20 @@ export class GameView {
   renderStartScreen() {
     this.activeScreen = new StartScreen(this.root, this.notify.bind(this))
   }
-  renderCreateNewGame() {
+  renderCreateNewGame(characters: CharacterModel[]) {
     this.activeScreen.destroy()
     this.root.innerHTML = null
     this.activeScreen = new CreateNewGame(this.root, this.notify.bind(this))
     this.characterInfo = new CharacterInfo(this.root, this.notify.bind(this))
+    this.createCharacters(characters)
   }
-  renderCreateNewCharacter() {
+  toggleCreateNewCharacter() {
     this.characterInfo.toggleVisible()
+    this.needsUpdate = true
+    // this.characterInfo.character = this.characters[0].scene
+    this.render()
   }
-  setActiveScreen() {
 
-  }
   clearScreen() {
 
   }
@@ -60,17 +63,18 @@ export class GameView {
     this.render()
   }
   createCharacters(characters: CharacterModel[]) {
-
+    const tasks = characters.map(({name, className, race, gender}: CharacterModel) => {
+      return {
+        url: `assets/characters/${race}/${className}/${gender}/model.gltf`,
+        name,
+        onLoad: this.addCharacter.bind(this)
+      }
+    })
+    this.loader.addBackgroundTask(tasks)
   }
 
-  async getCharacter({name, className, race, gender}: CharacterModel) {
-    const isExist = this.characters.find(char => {
-      return char.name === name
-    })
-    if(isExist) return isExist
-    const character =  await new CharacterView(name, className, race, gender).create()
+  addCharacter(character: GLTF) {
     this.characters.push(character)
-    return character
   }
 
   subscribe(observer: Observer) {
@@ -89,7 +93,6 @@ export class GameView {
     if(!this.needsUpdate) return false
     requestAnimationFrame(this.render.bind(this))
     if (this.worldView) this.worldView.render(this.clock)
-    if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
-
+    if (this.characterInfo) this.characterInfo.render()
   }
 }

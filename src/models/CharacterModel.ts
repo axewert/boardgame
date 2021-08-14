@@ -21,7 +21,8 @@ export class CharacterModel {
   private readonly _race: string
   characterClass: CharacterClassModel
   private _position: CharacterPositionModel
-  private readonly _gender: string;
+  private readonly _gender: string
+  private readonly _faction: string
   constructor(
     data: Character.Data,
     characterClass: CharacterClassModel,
@@ -31,6 +32,7 @@ export class CharacterModel {
     this._name = data.name
     this._race = data.race
     this._gender = data.gender
+    this._faction = data.faction
     this.characterClass = characterClass
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook
@@ -73,5 +75,8 @@ export class CharacterModel {
   }
   get position() {
     return this._position
+  }
+  get faction() {
+    return this._faction
   }
 }

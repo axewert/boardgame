@@ -14,7 +14,12 @@ export class CreateNewGame {
     this.container = new BasicComponent('<div class="create-game"></div>');
     ['alliance', 'horde'].forEach(faction => {
       const section = new BasicComponent(this.section(faction))
-      const addCharacter = new BasicComponent(this.addCharacter())
+      const addCharacter = new BasicComponent(
+        this.addCharacter({
+          name: 'faction',
+          value: faction
+        })
+      )
       section.add(addCharacter)
       addCharacter.addListeners({
         name: 'click',
@@ -35,9 +40,9 @@ export class CreateNewGame {
       this.container.domElement
     )
   }
-  addCharacter() {
+  addCharacter(attribute: {name: string, value: string}) {
     return `
-      <div class="create-game__add-character"></div>
+      <div class="create-game__add-character" data-${attribute.name}="${attribute.value}"></div>
     `
   }
   section(mod: string) {
@@ -47,8 +52,10 @@ export class CreateNewGame {
     `
   }
   handleAddNewCharacterClick(evt: Event) {
+    const {faction} = (evt.target as HTMLElement).dataset
     this.evtHandler({
-      type: ActionTypes.NewCharacterButtonIsClicked
+      type: ActionTypes.NewCharacterButtonIsClicked,
+      payload: faction
     })
   }
   handleAcceptNewGame() {

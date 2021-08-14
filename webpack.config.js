@@ -16,7 +16,10 @@ const getEnvKeys = () => {
   return envKeys
 }
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    main: './src/index.ts',
+    "service-worker": './src/sw/service-worker.ts'
+  },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
@@ -66,7 +69,8 @@ module.exports = {
     new MiniCssExtractPlugin({filename: 'styles/[name][hash].css'}),
     new CopyPlugin({
       patterns: [
-        { from: "src/assets", to: "assets" }
+        { from: "src/assets/world", to: "assets/world" },
+        { from: "src/assets/characters", to: "assets/characters" }
       ],
     }),
   ]

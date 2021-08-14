@@ -1,7 +1,8 @@
 import {GameModel} from "../models/GameModel";
 import {GameView} from "../views/GameView";
 import {Observer} from "../utlis/observer/Observer";
-import {Action, ActionTypes, ViewClassPanelInfo} from "../typings/observerActionTypes";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {CharacterModel} from "../models/CharacterModel";
 
 export class GameController {
   private readonly observer = new Observer(this.update.bind(this))
@@ -23,8 +24,7 @@ export class GameController {
         break
       }
       case ActionTypes.ModelDataIsLoaded: {
-        this.gameView.renderCreateNewGame()
-
+        this.gameView.renderCreateNewGame(action.payload as CharacterModel[])
         break
       }
       case ActionTypes.WorldIsReady: {
@@ -32,11 +32,12 @@ export class GameController {
         break
       }
       case ActionTypes.NewCharacterButtonIsClicked: {
-        this.gameView.renderCreateNewCharacter()
+        const characters = this.gameModel.getCharactersBuyFaction(action.payload as string)
+        this.gameView.toggleCreateNewCharacter()
         break
       }
       case ActionTypes.CharacterIsCreated: {
-        this.gameView.renderCreateNewCharacter()
+        this.gameView.toggleCreateNewCharacter()
         break
       }
       case ActionTypes.NewGameIsAccepted: {
@@ -47,6 +48,11 @@ export class GameController {
             }
           ]
         )
+        break
+      }
+      case ActionTypes.CharactersIsLoaded: {
+
+        break
       }
     }
   }
