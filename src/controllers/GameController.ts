@@ -1,7 +1,8 @@
 import {GameModel} from "../models/GameModel";
 import {GameView} from "../views/GameView";
 import {Observer} from "../utlis/observer/Observer";
-import {Action, ActionTypes, ViewClassPanelInfo} from "../typings/observerActionTypes";
+import {Action, ActionTypes} from "../typings/observerActionTypes";
+import {CharacterModel} from "../models/CharacterModel";
 
 export class GameController {
   private readonly observer = new Observer(this.update.bind(this))
@@ -23,16 +24,35 @@ export class GameController {
         break
       }
       case ActionTypes.ModelDataIsLoaded: {
-        this.gameView.renderNewGameCreatorView()
-        break
-      }
-      case ActionTypes.ViewClassControlIsClicked: {
-        const {className} = action.payload as ViewClassPanelInfo
-        this.gameView.setActiveCharacter(this.gameModel.getCharacterByClass(className))
+        this.gameView.renderCreateNewGame(action.payload as CharacterModel[])
         break
       }
       case ActionTypes.WorldIsReady: {
         this.gameView.renderWorldScreen()
+        break
+      }
+      case ActionTypes.NewCharacterButtonIsClicked: {
+        const characters = this.gameModel.getCharactersBuyFaction(action.payload as string)
+        this.gameModel.activeCharacter = characters[0]
+        this.gameView.openCreateNewCharacter(characters, this.gameModel.activeCharacter)
+        break
+      }
+      case ActionTypes.CharacterIsCreated: {
+        this.gameView.closeCreateNewCharacter()
+        break
+      }
+      case ActionTypes.NewGameIsAccepted: {
+        this.gameModel.play([
+            {
+              player: "player",
+              characters: ['hunter']
+            }
+          ]
+        )
+        break
+      }
+      case ActionTypes.CharactersIsLoaded: {
+
         break
       }
     }

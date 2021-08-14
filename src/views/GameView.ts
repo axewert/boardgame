@@ -1,65 +1,85 @@
 import * as THREE from 'three'
-import {Observer} from "../utlis/observer/Observer";
-import {Action, ActionTypes} from "../typings/observerActionTypes";
-import {Subject} from "../utlis/observer/Subject";
-import {CharacterInfoView} from "./CharacterInfoView/CharacterInfoView";
-import {CharacterView} from "./CharacterView";
-import {CharacterModel} from "../models/CharacterModel";
-import {CharacterSelectorPanel} from "./ui/CharacterSelectorPanel/CharacterSelectorPanel";
-import {WorldView} from "./WorldView";
-import {StartScreenView} from "./StartScreenView/StartScreenView";
-import {BasicView} from "./ui/BasicView";
+import {Observer} from "../utlis/observer/Observer"
+import {Action} from "../typings/observerActionTypes"
+import {Subject} from "../utlis/observer/Subject"
+import {CharacterModel} from "../models/CharacterModel"
+import {WorldView} from "./WorldView"
+import {StartScreen} from "./screens/StartScreen/StartScreen"
+import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame"
+import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo"
+import {GLTF} from "three/examples/jsm/loaders/GLTFLoader"
+import {Loader} from "../utlis/loader/Loader"
+import {NewCharacter} from "./screens/NewCharacter/NewCharacter";
 
 export class GameView {
   private readonly root: HTMLElement
   private readonly subject = new Subject()
-  private characterInfo: CharacterInfoView
   private readonly clock = new THREE.Clock()
-  private activeCharacter: CharacterView
-  private readonly characters: CharacterView[] = []
-  private characterCreator: CharacterSelectorPanel
+  private characters: GLTF[] = []
   private worldView: WorldView
-  private activeView: BasicView
   private needsUpdate = false
+  private activeScreen: StartScreen | CreateNewGame
+  private characterInfo: CharacterInfo
+  private newCharacter: NewCharacter
+  private readonly loader = new Loader()
   constructor(root: HTMLElement) {
     this.root = root
   }
 
   renderStartScreen() {
-    this.clearScreen()
-    this.activeView = new StartScreenView(
-      {
-        listeners: [
-          {
-            name: 'click',
-            handler: this.handleStartScreenClick.bind(this)
-          }
-        ]
+    this.activeScreen = new StartScreen(this.root, this.notify.bind(this))
+  }
+  renderCreateNewGame(characters: CharacterModel[]) {
+    this.activeScreen.destroy()
+    this.root.innerHTML = null
+    this.activeScreen = new CreateNewGame(this.root, this.notify.bind(this))
+    this.characterInfo = new CharacterInfo(this.root, this.notify.bind(this))
+    this.newCharacter = new NewCharacter(this.root, this.notify.bind(this))
+    this.createCharacters(characters)
+  }
+  openNewCharacterScreen() {
+
+  }
+  private async checkIfLoaded(characters: CharacterModel[]) {
+    const names = this.characters.map(char => char.scene.name)
+    const notLoaded = characters.filter(char => !names.includes(char.name))
+    if (!notLoaded) return true
+    return this.loader.loadNow(notLoaded.map(character => {
+      const {name, className, race, gender} = character
+      return {
+        url: `assets/characters/${race}/${className}/${gender}/model.gltf`,
+        name,
+        onLoad: this.addCharacter.bind(this)
       }
-    )
-    this.root.append(this.activeView.getDomElement())
+    }))
+  }
+  openCreateNewCharacter(characters: CharacterModel[], activeCharacter?: CharacterModel) {
+    this.checkIfLoaded(characters)
+      .then(() => {
+        this.characterInfo.character = this.characters
+          .find(character => {
+            return character.scene.name === activeCharacter.name
+          })
+          .scene
+        this.newCharacter.setButtons(characters)
+        this.characterInfo.open()
+        this.newCharacter.open()
+        this.needsUpdate = true
+        this.render()
+      })
+
+  }
+  closeCreateNewCharacter() {
+    this.characterInfo.close()
+    this.newCharacter.close()
+    this.needsUpdate = false
   }
 
   clearScreen() {
-    if(this.activeView) this.activeView.destroy()
-    this.root.innerHTML = ''
+
   }
 
-  handleStartScreenClick(evt: MouseEvent) {
-    if ((evt.currentTarget as HTMLElement).dataset.type === 'new-game') {
-      this.notify({
-        type: ActionTypes.NewGameButtonIsClicked
-      })
-    }
-  }
-  renderNewGameCreatorView() {
-    this.clearScreen()
-    
-  }
-  renderCharacterSelectorScreen(characters: CharacterModel[]) {
-    this.clearScreen()
-    this.activeView = new CharacterInfoView()
-  }
+
   renderWorldScreen() {
     this.createWorld()
     this.renderWorld()
@@ -70,37 +90,25 @@ export class GameView {
     this.worldView = new WorldView(this.root)
   }
   renderWorld() {
-
+    this.activeScreen.destroy()
+    this.root.innerHTML = null
+    this.root.append(this.worldView.domElement)
+    this.needsUpdate = true
+    this.render()
   }
-  updateWorld() {
-
-  }
-  setActiveCharacter(character: CharacterModel) {
-    this.getCharacter(character).then(char => {
-      this.activeCharacter = char
-
-    })
-  }
-
-  handleCreatorPanelClick(e: MouseEvent) {
-    const className = (e.target as HTMLElement).dataset.charclass
-    if(className === this.activeCharacter.className) return false
-    this.notify({
-      type: ActionTypes.ViewClassControlIsClicked,
-      payload: {
-        className
+  createCharacters(characters: CharacterModel[]) {
+    const tasks = characters.map(({name, className, race, gender}: CharacterModel) => {
+      return {
+        url: `assets/characters/${race}/${className}/${gender}/model.gltf`,
+        name,
+        onLoad: this.addCharacter.bind(this)
       }
     })
+    this.loader.addBackgroundTask(tasks)
   }
 
-  async getCharacter({name, className, race, gender}: CharacterModel) {
-    const isExist = this.characters.find(char => {
-      return char.name === name
-    })
-    if(isExist) return isExist
-    const character =  await new CharacterView(name, className, race, gender).create()
+  addCharacter(character: GLTF) {
     this.characters.push(character)
-    return character
   }
 
   subscribe(observer: Observer) {
@@ -118,6 +126,7 @@ export class GameView {
   render() {
     if(!this.needsUpdate) return false
     requestAnimationFrame(this.render.bind(this))
-    if (this.activeCharacter) this.activeCharacter.render(this.clock.getDelta())
+    if (this.worldView) this.worldView.render(this.clock)
+    if (this.characterInfo) this.characterInfo.render()
   }
 }

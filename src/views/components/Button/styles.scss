@@ -4,6 +4,9 @@
   cursor: url('../../../assets/cursors/hand.cur'), pointer;
   border: none;
   font-weight: bold;
+  padding: 0;
+  background: none;
+  position: relative;
   &__text {
     position: relative;
     z-index: 10;
@@ -93,5 +96,11 @@
       }
     }
   }
-
+  &_round {
+    width: 70px;
+    height: 70px;
+    &.button_active {
+      margin-left: 20px;
+    }
+  }
 }
