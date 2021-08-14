@@ -20,9 +20,9 @@ export class GameModel {
   private _classes: Character.Class[]
   private readonly subject = new Subject()
   private spells: SpellBook.Spell<any>[]
-  private activeCharacter: CharacterModel
+  private _activeCharacter: CharacterModel
   private players: Player<CharacterModel>[] = []
-  charactersCacheName = 'characters-cache-v1'
+
   constructor() {}
 
   createNewGame() {
@@ -38,23 +38,9 @@ export class GameModel {
           type: ActionTypes.ModelDataIsLoaded,
           payload: this.characters
         })
-        this.preloadCharacters().then(() => {
-          this.notify({
-              type: ActionTypes.CharactersIsLoaded,
-              payload: this.charactersCacheName
-            })
-        })
       })
   }
-  async preloadCharacters() {
-    const manifests = await Promise.all(this.characters.map(character => {
-      return this.getCharacterFiles(character)
-    }))
 
-  }
-  get cache() {
-    return caches.open(this.charactersCacheName)
-  }
   async getCharacterFiles({race, className, gender}:CharacterModel) {
     const url = `assets/characters/${race}/${className}/${gender}`
     const getFilePath = (fileName: string) => {
@@ -151,6 +137,12 @@ export class GameModel {
   }
   get classes() {
     return this._classes
+  }
+  get activeCharacter() {
+    return this._activeCharacter
+  }
+  set activeCharacter(character: CharacterModel) {
+    this._activeCharacter = character
   }
   getCharacterByClass(className: string) {
     return this.characters.find(character => character.className === className)

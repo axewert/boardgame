@@ -1,0 +1,10 @@
+.control-panel {
+  width: 10%;
+  height: 100%;
+  left: 0;
+  display: flex;
+  &_horizontal {
+    flex-direction: column;
+    justify-content: center;
+  }
+}

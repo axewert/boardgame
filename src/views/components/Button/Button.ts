@@ -2,15 +2,15 @@ import {BasicComponent} from "../BasicComponent";
 import (/*webpackChunkName: 'button'*/'./styles.scss')
 
 export interface ButtonParameters {
-  text: string
+  text?: string
   disabled?: boolean
   attributes?: {[key:string]: string}[]
   modifiers?: string[]
 }
 
 
-export const Button = ({text, disabled, attributes, modifiers}: ButtonParameters) => {
-
+export const Button = (parameters?: ButtonParameters) => {
+  const {text, disabled, attributes, modifiers} = parameters
   const name = 'button'
 
   return `
@@ -19,7 +19,7 @@ export const Button = ({text, disabled, attributes, modifiers}: ButtonParameters
         ${disabled ? 'disabled' : ''} 
         ${attributes? BasicComponent.createDataAttributes(attributes) : ''}
       >
-        <span class="button__text">${text}</span>
+        <span class="button__text">${text?text:''}</span>
         <span class="button__bg"></span>
       </button>
     `

@@ -2,11 +2,13 @@ export class BasicComponent {
   _domElement: HTMLElement
   protected components: BasicComponent[] = []
   protected listeners: {name: string, handler: (e: Event) => void}[] = []
-
+  private readonly _name: string
   constructor(
     html: string,
+    name?: string
   ) {
     this.init(html)
+    this._name = name || null
   }
   init(html: string) {
     this.createDomElement(html)
@@ -53,5 +55,8 @@ export class BasicComponent {
   }
   get domElement() {
     return this._domElement
+  }
+  get name() {
+    return this._name
   }
 }

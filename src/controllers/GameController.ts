@@ -33,11 +33,12 @@ export class GameController {
       }
       case ActionTypes.NewCharacterButtonIsClicked: {
         const characters = this.gameModel.getCharactersBuyFaction(action.payload as string)
-        this.gameView.toggleCreateNewCharacter()
+        this.gameModel.activeCharacter = characters[0]
+        this.gameView.openCreateNewCharacter(characters)
         break
       }
       case ActionTypes.CharacterIsCreated: {
-        this.gameView.toggleCreateNewCharacter()
+        this.gameView.closeCreateNewCharacter()
         break
       }
       case ActionTypes.NewGameIsAccepted: {

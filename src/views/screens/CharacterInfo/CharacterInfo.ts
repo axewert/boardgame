@@ -25,18 +25,20 @@ export class CharacterInfo {
       this.characterPreview.domElement
     )
     this.container.add(this.acceptButton)
+  }
+  open() {
     this.root.append(
       this.container.domElement,
     )
+  }
+  close() {
+    this.container.domElement.remove()
   }
 
   set character(character: THREE.Group) {
     this.characterPreview.character = character
   }
 
-  toggleVisible() {
-    this.container.domElement.classList.toggle('character-info_visible')
-  }
   handleAcceptButtonClick() {
     this.evtHandler({
       type: ActionTypes.CharacterIsCreated

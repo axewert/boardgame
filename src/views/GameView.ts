@@ -9,6 +9,7 @@ import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame"
 import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo"
 import {GLTF} from "three/examples/jsm/loaders/GLTFLoader"
 import {Loader} from "../utlis/loader/Loader"
+import {NewCharacter} from "./screens/NewCharacter/NewCharacter";
 
 export class GameView {
   private readonly root: HTMLElement
@@ -19,6 +20,7 @@ export class GameView {
   private needsUpdate = false
   private activeScreen: StartScreen | CreateNewGame
   private characterInfo: CharacterInfo
+  private newCharacter: NewCharacter
   private readonly loader = new Loader()
   constructor(root: HTMLElement) {
     this.root = root
@@ -32,13 +34,23 @@ export class GameView {
     this.root.innerHTML = null
     this.activeScreen = new CreateNewGame(this.root, this.notify.bind(this))
     this.characterInfo = new CharacterInfo(this.root, this.notify.bind(this))
+    this.newCharacter = new NewCharacter(this.root, this.notify.bind(this))
     this.createCharacters(characters)
   }
-  toggleCreateNewCharacter() {
-    this.characterInfo.toggleVisible()
+  openNewCharacterScreen() {
+
+  }
+  openCreateNewCharacter(characters: CharacterModel[]) {
+    this.characterInfo.open()
+    this.newCharacter.setButtons(characters)
+    this.newCharacter.open()
     this.needsUpdate = true
-    // this.characterInfo.character = this.characters[0].scene
     this.render()
+  }
+  closeCreateNewCharacter() {
+    this.characterInfo.close()
+    this.newCharacter.close()
+    this.needsUpdate = false
   }
 
   clearScreen() {
