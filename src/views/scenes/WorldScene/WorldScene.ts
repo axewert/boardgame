@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {CharacterScene} from "../CharacterScene/CharacterScene";
+import {Vector3} from "three";
 
 
-export class WorldView {
+export class WorldScene {
   private readonly scene = new THREE.Scene()
   private readonly camera = new THREE.PerspectiveCamera(50,  window.innerWidth / window.innerHeight, 0.1, 10000)
   private readonly renderer = new THREE.WebGLRenderer()
@@ -13,6 +15,8 @@ export class WorldView {
   private cachedTiles: THREE.Mesh[] = []
   private tiles = new THREE.Group()
   private controls: OrbitControls
+  private character: CharacterScene
+  private cameraDistance = 50
   constructor(private root: HTMLElement) {
     this.init()
   }
@@ -30,8 +34,13 @@ export class WorldView {
     this.loadTiles().then(() => {
       this.scene.add(...this.cachedTiles)
     })
+    this.renderer.domElement.addEventListener('pointerdown', e => {
+      this.handlePointerDown(e)
+    })
   }
-
+  handlePointerDown(evt: PointerEvent) {
+    
+  }
   isFrustumCulled(tile: THREE.Object3D) {
     this.camera.updateProjectionMatrix()
     this.frustum.setFromProjectionMatrix( new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse))
@@ -72,5 +81,20 @@ export class WorldView {
   }
   get domElement() {
     return this.renderer.domElement
+  }
+  setCharacter(character: CharacterScene) {
+    const position = new Vector3(-159.06925392911927, 80.09302927832343, -8851.895144103355)
+    const {x,y,z} = position
+    this.character = character
+    this.character.scene.scale.set(10,10,10)
+    this.character.scene.position.set(x,y,z)
+    this.camera.position.set(
+      x + this.cameraDistance,
+      y + this.cameraDistance ,
+      z + this.cameraDistance
+    )
+    this.controls.target = position
+    this.controls.update()
+    this.scene.add(this.character.scene)
   }
 }

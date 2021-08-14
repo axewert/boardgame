@@ -23,11 +23,14 @@ export class CharacterModel {
   private _position: CharacterPositionModel
   private readonly _gender: string
   private readonly _faction: string
+  private readonly _id: number
+  player: number
   constructor(
     data: Character.Data,
     characterClass: CharacterClassModel,
     spellBook: SpellBookModel,
-    position: CharacterPositionModel
+    position: CharacterPositionModel,
+    id: number
   ) {
     this._name = data.name
     this._race = data.race
@@ -37,6 +40,7 @@ export class CharacterModel {
     this.equipment = new EquipmentModel(this.characterClass.equipmentRequirements)
     this.spellBook = spellBook
     this._position = position
+    this._id = id
   }
   addItem(item: Inventory.Item) {
     this.inventory.addItem(item)
@@ -78,5 +82,8 @@ export class CharacterModel {
   }
   get faction() {
     return this._faction
+  }
+  get id() {
+    return this._id
   }
 }

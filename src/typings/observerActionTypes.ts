@@ -14,7 +14,8 @@ export enum ActionTypes {
   NewCharacterButtonIsClicked = 'NewCharacterButtonIsClicked',
   CharacterIsCreated = 'CharacterIsCreated',
   NewGameIsAccepted = 'NewGameIsAccepted',
-  CharactersIsLoaded = 'CharactersIsLoaded'
+  CharactersIsLoaded = 'CharactersIsLoaded',
+  NewActiveCharacterIsSelected = 'NewActiveCharacterIsSelected'
 }
 
 export type ViewClassPanelInfo = {className: string}

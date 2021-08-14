@@ -45,9 +45,11 @@ export class Loader {
       gltf.scene.name = name
       gltf.scene.traverse(child => {
         if (child.type.match(/Mesh/)) {
-          (child as THREE.Mesh).material = new THREE.MeshBasicMaterial({
+          (child as THREE.Mesh).material = new THREE.MeshStandardMaterial({
             // @ts-ignore
-            map: (child as THREE.Mesh).material.map
+            map: (child as THREE.Mesh).material.map,
+            transparent: true,
+            metalness: 0.1
           })
         }
       })

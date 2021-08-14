@@ -1,13 +1,18 @@
-import {Action} from "../../../typings/observerActionTypes";
+import {Action, ActionTypes} from "../../../typings/observerActionTypes";
 import {BasicComponent} from "../../components/BasicComponent";
 import {ControlPanel} from "../../components/ControlPanel/ControlPanel";
 import {CharacterModel} from "../../../models/CharacterModel";
 import {Button} from "../../components/Button/Button";
+import {Menu} from "../../components/Menu/Menu";
 
 export class NewCharacter {
-  container: BasicComponent
-  panel: BasicComponent
-  buttons: BasicComponent[] = []
+  private container: BasicComponent
+  private leftPanel: BasicComponent
+  private topPanel: BasicComponent
+  private buttons: BasicComponent[] = []
+  private menu: BasicComponent
+  private acceptButton: BasicComponent
+
   constructor(
     private root: HTMLElement,
     private evtHandler: (action: Action) => void,
@@ -16,11 +21,22 @@ export class NewCharacter {
   }
   init() {
     this.container = new BasicComponent('<div class="new-character"></div>')
-    this.panel = new BasicComponent(ControlPanel({
-      modifiers: ['horizontal']
+    this.topPanel = new BasicComponent(ControlPanel())
+    this.acceptButton = new BasicComponent(Button({
+      text: 'OK',
+      modifiers: ['main', 'purple']
+    }))
+    this.acceptButton.addListeners({
+      name: 'click',
+      handler: this.handleAcceptButtonClick.bind(this)
+    })
+    this.topPanel.add(this.acceptButton)
+    this.leftPanel = new BasicComponent(ControlPanel({
+      modifiers: ['vertical']
     }))
     this.container.add(
-      this.panel
+      this.topPanel,
+      this.leftPanel,
     )
   }
   open() {
@@ -30,22 +46,24 @@ export class NewCharacter {
     this.container.domElement.remove()
   }
   setButtons(characters: CharacterModel[]) {
-    const buttonNames = characters.map(character => character.className)
+    const buttonNames = characters.map(character => character.name)
+
     if (this.buttons) this.removeUnusedButtons(buttonNames)
+
     const isExist = (name: string) => this.buttons.find(btn => btn.name === name)
-    buttonNames.forEach(name => {
+    characters.forEach(({name, className, id}) => {
       if (isExist(name)) return
       const button = new BasicComponent(
         Button({
           modifiers: ['round'],
           attributes: [{
-            className: name
+            id: `${id}`
           }]
         }),
         name
       )
       button.add(new BasicComponent(
-        `<span class="icon icon_${name}"></span>`
+        `<span class="icon icon_${className}"></span>`
       ))
       button.addListeners({
         name: 'click',
@@ -53,7 +71,7 @@ export class NewCharacter {
       })
       this.buttons.push(button)
     })
-    this.panel.add(...this.buttons)
+    this.leftPanel.add(...this.buttons)
   }
   removeUnusedButtons(needed: string[]) {
     const isNeed = (name: string) => needed.includes(name)
@@ -66,7 +84,18 @@ export class NewCharacter {
       return isNeed(button.name)
     })
   }
-  handleButtonClick() {
-    console.log('click')
+  handleButtonClick(evt: Event) {
+    const {id} = (evt.currentTarget as HTMLElement).dataset
+    this.evtHandler({
+      type: ActionTypes.NewActiveCharacterIsSelected,
+      payload: id
+    })
+  }
+  private handleAcceptButtonClick (evt: Event) {
+    const {id} = (evt.currentTarget as HTMLElement).dataset
+    this.evtHandler({
+      type: ActionTypes.CharacterIsCreated,
+      payload: id
+    })
   }
 }

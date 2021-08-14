@@ -3,25 +3,27 @@ import {Observer} from "../utlis/observer/Observer"
 import {Action} from "../typings/observerActionTypes"
 import {Subject} from "../utlis/observer/Subject"
 import {CharacterModel} from "../models/CharacterModel"
-import {WorldView} from "./WorldView"
 import {StartScreen} from "./screens/StartScreen/StartScreen"
 import {CreateNewGame} from "./screens/CreateNewGame/CreateNewGame"
 import {CharacterInfo} from "./screens/CharacterInfo/CharacterInfo"
 import {GLTF} from "three/examples/jsm/loaders/GLTFLoader"
 import {Loader} from "../utlis/loader/Loader"
 import {NewCharacter} from "./screens/NewCharacter/NewCharacter";
+import {CharacterScene} from "./scenes/CharacterScene/CharacterScene";
+import {WorldScene} from "./scenes/WorldScene/WorldScene";
 
 export class GameView {
   private readonly root: HTMLElement
   private readonly subject = new Subject()
   private readonly clock = new THREE.Clock()
-  private characters: GLTF[] = []
-  private worldView: WorldView
+  private characters: CharacterScene[] = []
+  private worldScene: WorldScene
   private needsUpdate = false
   private activeScreen: StartScreen | CreateNewGame
   private characterInfo: CharacterInfo
   private newCharacter: NewCharacter
   private readonly loader = new Loader()
+  private activeCharacter: CharacterModel
   constructor(root: HTMLElement) {
     this.root = root
   }
@@ -53,21 +55,13 @@ export class GameView {
       }
     }))
   }
-  openCreateNewCharacter(characters: CharacterModel[], activeCharacter?: CharacterModel) {
-    this.checkIfLoaded(characters)
-      .then(() => {
-        this.characterInfo.character = this.characters
-          .find(character => {
-            return character.scene.name === activeCharacter.name
-          })
-          .scene
-        this.newCharacter.setButtons(characters)
-        this.characterInfo.open()
-        this.newCharacter.open()
-        this.needsUpdate = true
-        this.render()
-      })
-
+  openCreateNewCharacter(characters: CharacterModel[], activeCharacter: CharacterModel) {
+    this.characterInfo.character = this.getCharacterByName(activeCharacter.name)
+    this.newCharacter.setButtons(characters)
+    this.characterInfo.open()
+    this.newCharacter.open()
+    this.needsUpdate = true
+    this.render()
   }
   closeCreateNewCharacter() {
     this.characterInfo.close()
@@ -80,19 +74,20 @@ export class GameView {
   }
 
 
-  renderWorldScreen() {
+  renderWorldScreen(character: CharacterModel) {
     this.createWorld()
     this.renderWorld()
+    this.worldScene.setCharacter(this.getCharacterByName(character.name))
     this.render()
   }
 
   createWorld() {
-    this.worldView = new WorldView(this.root)
+    this.worldScene = new WorldScene(this.root)
   }
   renderWorld() {
     this.activeScreen.destroy()
     this.root.innerHTML = null
-    this.root.append(this.worldView.domElement)
+    this.root.append(this.worldScene.domElement)
     this.needsUpdate = true
     this.render()
   }
@@ -108,9 +103,11 @@ export class GameView {
   }
 
   addCharacter(character: GLTF) {
-    this.characters.push(character)
+    this.characters.push(new CharacterScene(character))
   }
-
+  setActiveCharacter({name}: CharacterModel) {
+    this.characterInfo.character = this.getCharacterByName(name)
+  }
   subscribe(observer: Observer) {
     this.subject.subscribe(observer)
   }
@@ -122,11 +119,14 @@ export class GameView {
   notify(action: Action) {
     this.subject.notify(action)
   }
-
+  getCharacterByName(name: string) {
+    return this.characters.find(character => character.scene.name === name)
+  }
   render() {
+    const delta = this.clock.getDelta()
     if(!this.needsUpdate) return false
     requestAnimationFrame(this.render.bind(this))
-    if (this.worldView) this.worldView.render(this.clock)
-    if (this.characterInfo) this.characterInfo.render()
+    if (this.worldScene) this.worldScene.render(this.clock)
+    if (this.characterInfo) this.characterInfo.render(delta)
   }
 }

@@ -28,7 +28,7 @@ export class GameController {
         break
       }
       case ActionTypes.WorldIsReady: {
-        this.gameView.renderWorldScreen()
+        this.gameView.renderWorldScreen(this.gameModel.activeCharacter)
         break
       }
       case ActionTypes.NewCharacterButtonIsClicked: {
@@ -38,21 +38,20 @@ export class GameController {
         break
       }
       case ActionTypes.CharacterIsCreated: {
+        this.gameModel.setPlayer(+action.payload)
         this.gameView.closeCreateNewCharacter()
         break
       }
       case ActionTypes.NewGameIsAccepted: {
-        this.gameModel.play([
-            {
-              player: "player",
-              characters: ['hunter']
-            }
-          ]
-        )
+        this.gameModel.play()
+        break
+      }
+      case ActionTypes.NewActiveCharacterIsSelected: {
+        const character = this.gameModel.getCharacterById(+action.payload)
+        this.gameView.setActiveCharacter(character)
         break
       }
       case ActionTypes.CharactersIsLoaded: {
-
         break
       }
     }

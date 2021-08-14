@@ -11,6 +11,7 @@ import {Action, ActionTypes} from "../typings/observerActionTypes";
 import {SpellBook} from "../typings/spellBookTypes";
 import {CharacterPositionModel} from "./CharacterPositionModel";
 import {SpellBookModel} from "./SpellBookModel";
+import {Players} from "../typings/playersTypings";
 
 
 export class GameModel {
@@ -32,7 +33,7 @@ export class GameModel {
         this._races = data.races
         this._classes = data.classes
         this.spells = data.spells
-        data.characters.forEach(character => this.createNewCharacter(character))
+        data.characters.forEach((character, index) => this.createNewCharacter(character, index))
         this.notify({
           type: ActionTypes.ModelDataIsLoaded,
           payload: this.characters
@@ -60,8 +61,9 @@ export class GameModel {
       ]
     })
   }
-  play(players: Player<string>[]) {
-    this.initPlayers(players)
+  play() {
+    this.characters = this.characters.filter(character => character.player)
+    console.log(this.characters)
     this.fetchData('world')
       .then(res => res.json())
       .then(world => {
@@ -95,7 +97,11 @@ export class GameModel {
     this.characters = this.characters
       .filter(character => activeCharacters.includes(character))
   }
-  createNewCharacter(character: Character.Data) {
+  setPlayer(player: number) {
+    this.activeCharacter.player = player || Players.red
+  }
+
+  createNewCharacter(character: Character.Data, id: number) {
     const isExist = this.characters.find(char => char.name === character.name)
     if(isExist) return
 
@@ -110,7 +116,8 @@ export class GameModel {
       character,
       new CharacterClassModel(classData),
       new SpellBookModel(spells),
-      new CharacterPositionModel(position)
+      new CharacterPositionModel(position),
+      id
     ))
   }
 
@@ -148,5 +155,8 @@ export class GameModel {
   }
   getCharactersBuyFaction(faction: string) {
     return this.characters.filter(character => character.faction === faction)
+  }
+  getCharacterById(id: number) {
+    return this.characters.find(character => character.id === id)
   }
 }
