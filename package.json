@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
-    "start": "webpack serve --mode=development"
+    "start": "webpack serve --mode=development",
+    "deploy": "webpack --mode=production && firebase deploy"
   },
   "keywords": [],
   "author": "axewert<secret4talk@gmail.com>",
@@ -36,6 +37,7 @@
     "@types/three": "^0.130.1",
     "cannon-es": "^0.18.0",
     "dotenv": "^10.0.0",
+    "glob": "^7.1.7",
     "three": "^0.130.1"
   }
 }
